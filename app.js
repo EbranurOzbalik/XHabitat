@@ -89,6 +89,7 @@ function show(view) {
   $('#subtitle').textContent = views[view][2];
   $('#new-record').hidden = view === 'entry' || view === 'facilities' || view === 'assistant';
   history.replaceState(null, '', '#' + view);
+  if (typeof window !== 'undefined') window.scrollTo(0, 0);
 }
 
 document.querySelectorAll('nav button').forEach(button => button.onclick = () => show(button.dataset.view));
@@ -387,3 +388,8 @@ resetRecordForm();
 const initialView = location.hash.slice(1) || 'overview';
 render();
 show(initialView);
+if (typeof window !== 'undefined') {
+  window.requestAnimationFrame(() => window.requestAnimationFrame(() => window.scrollTo(0, 0)));
+  if (document.readyState === 'complete') window.scrollTo(0, 0);
+  else window.addEventListener('load', () => window.scrollTo(0, 0), {once:true});
+}
