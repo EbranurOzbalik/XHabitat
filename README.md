@@ -26,3 +26,15 @@ Kurulum veya API anahtarı gerekmez. `npm run check` JavaScript sözdizimini kon
 - Öneriler kural tabanlıdır; AI API entegrasyonu yoktur.
 - Veriler cihazlar arasında eşitlenmez. Tarayıcı verilerini silmek kayıtları kaldırır; CSV ile yedek alın.
 - Google Fonts erişilemezse sistem fontu kullanılır. Diğer işlevler dış servis gerektirmez.
+
+## Cemendus entegrasyonu
+
+Masaüstündeki `cemendus-greenai.zip` içindeki sensör, eşik uyarısı ve senaryo modülleri mevcut XHabitat arayüzüne uyarlandı. React/Cloudflare uygulaması ayrıca çalıştırılmaz; özellikler mevcut bağımlılıksız web uygulamasına entegredir.
+
+- Fabrika demosu: sentetik ölçümler, 10 saniyelik güncelleme, duraklatma, 24 saatlik örnek güç grafiği ve eşik uyarıları.
+- Senaryo analizi: elektrik, alternatif yakıt, klinker ve üretim azaltımı; yıllık çalışma süresi ve elektrik fiyatı.
+- ZIP'teki 1240 kW / 145 ton-saat ile 95 kWh/ton çelişkisi düzeltildi: örnek referans güç 13775 kW seçildi.
+- Karbon modeli örnek bileşenlere ayrıldı; varsayımlar ekranda açıklanır. Üretim azaltımı artık sonucu etkiler.
+- Günlük kayıtlar ve enerji kaynaklı emisyon hesapları simülasyondan bağımsız kalır.
+- ZIP içindeki node_modules, yerel Cloudflare veritabanları ve bozuk Markdown kod başlıkları alınmadı. ZIP değiştirilmedi.
+- Model doğrulaması: `node cemendus-model.test.cjs`.
