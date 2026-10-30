@@ -1,4 +1,4 @@
-const aiState={configured:false,busy:false,messages:[{role:'assistant',text:'Merhaba! Seçili tesisin enerji, karbon, hedef ve karşılaştırma çıktılarını yorumlayabilirim. Bir hazır soru seç veya kendi sorunu yaz.'}]};
+const aiState={configured:false,mode:'local',busy:false,messages:[],facilityId:null};
 const aiRound=(value,digits=3)=>Number.isFinite(value)?Number(value.toFixed(digits)):null;
 const aiMedian=values=>{const sorted=[...values].sort((a,b)=>a-b),middle=Math.floor(sorted.length/2);return sorted.length%2?sorted[middle]:(sorted[middle-1]+sorted[middle])/2};
 
@@ -32,6 +32,14 @@ function renderAssistantContext(){
   for(const [label,value] of items){const row=document.createElement('div'),name=document.createElement('span'),result=document.createElement('strong');name.textContent=label;result.textContent=value;row.append(name,result);$('#assistant-context').append(row)}
 }
 
+function resetAiConversation(force=false){
+  const facility=activeFacility(),changed=aiState.facilityId!==facility.id;
+  if(!force&&!changed&&aiState.messages.length>1)return;
+  aiState.facilityId=facility.id;
+  aiState.messages=[{role:'assistant',text:XHabitatAssistant.interpret('Sonuçlarımı genel olarak yorumla.',buildAssistantContext())}];
+  renderAiMessages();
+}
+
 function renderAiMessages(){
   const panel=$('#ai-messages');
   panel.replaceChildren();
@@ -47,34 +55,46 @@ function setAiSendDisabled(disabled){
 
 function setAiAvailability(configured,model){
   aiState.configured=configured;
+  aiState.mode=configured?'openai':'local';
   const status=$('#ai-status');
-  status.textContent=configured?`Hazır · ${model}`:'API anahtarı gerekli';
-  status.className=`ai-status ${configured?'ready':'error'}`;
-  setAiSendDisabled(!configured);
-  if(!configured)$('#ai-form-status').textContent='Sunucuda OPENAI_API_KEY tanımlanmalı.';
+  status.textContent=configured?`OpenAI bağlı · ${model}`:'Yerel analiz hazır';
+  status.className=`ai-status ${configured?'ready':'local'}`;
+  setAiSendDisabled(false);
+  $('.assistant-privacy').textContent=configured?'Sorun ve bu özet, yanıt oluşturmak için OpenAI API’ye gönderilir. API anahtarı tarayıcıya aktarılmaz.':'Yorumlar bu tarayıcıda, kural tabanlı olarak oluşturulur. Tesis verileri dışarı gönderilmez.';
+  $('#ai-form-status').textContent='';
 }
 
 async function loadAiStatus(){
   try{const response=await fetch('/api/assistant/status');if(!response.ok)throw Error();const data=await response.json();setAiAvailability(Boolean(data.configured),data.model||'OpenAI');}
-  catch{setAiAvailability(false);$('#ai-form-status').textContent='AI sunucusuna bağlanılamadı. Uygulamayı npm start ile aç.';}
+  catch{setAiAvailability(false);}
 }
 
 async function askAssistant(question){
-  if(aiState.busy||!aiState.configured)return;
+  if(aiState.busy)return;
   const context=buildAssistantContext();
   if(!context.summary.recordCount){$('#ai-form-status').textContent='Önce seçili tesise en az bir üretim kaydı ekle.';return;}
   aiState.busy=true;setAiSendDisabled(true);$('#ai-form-status').textContent='';
   aiState.messages.push({role:'user',text:question},{role:'assistant',text:'Verileri yorumluyorum…',loading:true});renderAiMessages();
   try{
-    const history=aiState.messages.slice(0,-2).filter(message=>!message.loading).slice(-6);
-    const response=await fetch('/api/assistant',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question,context,history})});
-    const data=await response.json();if(!response.ok)throw Error(data.error||'AI yanıtı alınamadı.');
-    aiState.messages[aiState.messages.length-1]={role:'assistant',text:data.answer};
-  }catch(error){aiState.messages[aiState.messages.length-1]={role:'assistant',text:`Yanıt oluşturulamadı: ${error.message}`};}
-  finally{aiState.busy=false;setAiSendDisabled(!aiState.configured);renderAiMessages();}
+    if(aiState.mode==='openai'){
+      const history=aiState.messages.slice(0,-2).filter(message=>!message.loading).slice(-6);
+      const response=await fetch('/api/assistant',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question,context,history})});
+      const data=await response.json();if(!response.ok)throw Error(data.error||'AI yanıtı alınamadı.');
+      aiState.messages[aiState.messages.length-1]={role:'assistant',text:data.answer};
+    }else{
+      aiState.messages[aiState.messages.length-1]={role:'assistant',text:XHabitatAssistant.interpret(question,context)};
+    }
+  }catch(error){
+    const fallback=XHabitatAssistant.interpret(question,context);
+    aiState.messages[aiState.messages.length-1]={role:'assistant',text:aiState.mode==='openai'?`OpenAI yanıtı alınamadı; yerel yorum gösteriliyor.\n\n${fallback}`:`Yanıt oluşturulamadı: ${error.message}`};
+  }
+  finally{aiState.busy=false;setAiSendDisabled(false);renderAiMessages();}
 }
 
 $('#ai-form').onsubmit=event=>{event.preventDefault();const question=$('#ai-question').value.trim();if(question.length<2)return;$('#ai-question').value='';askAssistant(question)};
-document.querySelectorAll('[data-ai-question]').forEach(button=>button.onclick=()=>{const question=button.dataset.aiQuestion;$('#ai-question').value=question;askAssistant(question)});
-const renderWithAssistant=render;render=function(){renderWithAssistant();renderAssistantContext();};
-renderAssistantContext();renderAiMessages();loadAiStatus();
+document.querySelectorAll('[data-ai-question]').forEach(button=>button.onclick=()=>{const question=button.dataset.aiQuestion;$('#ai-question').value='';askAssistant(question)});
+const aiHeadingActions=document.createElement('div'),aiClear=document.createElement('button'),aiStatus=$('#ai-status');
+aiHeadingActions.className='ai-heading-actions';aiClear.type='button';aiClear.className='secondary ai-clear';aiClear.textContent='Yeni sohbet';
+aiStatus.replaceWith(aiHeadingActions);aiHeadingActions.append(aiStatus,aiClear);aiClear.onclick=()=>resetAiConversation(true);
+const renderWithAssistant=render;render=function(){renderWithAssistant();renderAssistantContext();resetAiConversation();};
+renderAssistantContext();resetAiConversation(true);loadAiStatus();

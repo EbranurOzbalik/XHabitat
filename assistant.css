@@ -185,6 +185,23 @@
 
 #assistant .ai-status.ready { border-color: #c9e6d1; }
 #assistant .ai-status.error { border-color: #f0d4d4; }
+#assistant .ai-status.local { border-color: #c8e4ec; color: #246983; background: #eaf6f8; }
+
+#assistant .ai-heading-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+#assistant .ai-clear {
+  padding: 8px 11px;
+  border-radius: 999px;
+  color: #617787;
+  background: #fff;
+  font-size: 11px;
+}
 
 #assistant .assistant-suggestions {
   margin: 0 0 18px;
@@ -571,6 +588,7 @@
   #assistant .assistant-chat { padding: 21px; border-radius: 16px; }
   #assistant .assistant-context { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   #assistant .assistant-chat > .card-heading { gap: 12px; }
+  #assistant .ai-heading-actions { align-items: flex-end; flex-direction: column; }
   #assistant .assistant-chat > .card-heading h3 { font-size: 22px; }
   #assistant .ai-status { font-size: 10px; }
   #assistant .assistant-suggestions { flex-direction: row; overflow-x: auto; padding-bottom: 4px; }

@@ -4,7 +4,7 @@
 
 XHabitat, çimento üretiminde elektrik tüketimini ve enerji kaynaklı karbon salımını görünür hâle getiren bir web uygulamasıdır. Yeşil Gelecek Hackathonu için geliştirilen bu prototip; günlük üretim takibini, verimlilik analizini ve Cemendus senaryo modüllerini aynı çalışma alanında birleştirir.
 
-> **Prototip kapsamı:** Günlük veriler kullanıcı tarafından girilir. Fabrika demosundaki sensörler sentetiktir; öneriler kural tabanlıdır. Gerçek IoT bağlantısı veya AI API entegrasyonu bulunmaz.
+> **Prototip kapsamı:** Günlük veriler kullanıcı tarafından girilir. Fabrika demosundaki sensörler sentetiktir. Asistan API anahtarı olmadan yerel ve kural tabanlı yorum üretir; isteğe bağlı OpenAI bağlantısı gelişmiş doğal dil yanıtları sağlar. Gerçek IoT bağlantısı bulunmaz.
 
 ## Özellikler
 
@@ -34,18 +34,20 @@ Tahmini maliyet tasarrufu = Elektrik tasarrufu × Elektrik fiyatı
 
 Sonuçlar yalnızca kayıtlı dönemi kapsar; yıllık tahmin veya tasarruf garantisi değildir.
 
-## AI asistan kurulumu
+## AI asistan
 
-AI asistan, yeni metin uygulamaları için önerilen [OpenAI Responses API](https://developers.openai.com/api/docs/guides/text) ile çalışır. API anahtarı tarayıcı koduna yazılmaz; yalnızca yerel Node.js sunucusundaki ortam değişkeninden okunur.
+AI asistan varsayılan olarak API anahtarı gerektirmez. Seçili tesisin yoğunluğunu, eğilimini, hedef farkını, teorik tasarrufunu, enerji kaynaklı karbonunu ve Zenodo karşılaştırmasını tarayıcı içinde yorumlar. Bu modda tesis verileri dışarı gönderilmez.
+
+İsteğe bağlı olarak yeni metin uygulamaları için önerilen [OpenAI Responses API](https://developers.openai.com/api/docs/guides/text) bağlanabilir. API anahtarı tarayıcı koduna yazılmaz; yalnızca yerel Node.js sunucusundaki ortam değişkeninden okunur.
 
 1. `.env.example` dosyasını `.env` adıyla kopyala.
 2. `OPENAI_API_KEY` alanına kendi OpenAI API anahtarını yaz.
 3. Gerekirse `OPENAI_MODEL` değerini hesabında erişebildiğin bir modelle değiştir.
 4. `npm start` komutuyla sunucuyu yeniden başlat.
 
-Asistan seçili tesisin son yedi kaydını, üretim ağırlıklı elektrik yoğunluğunu, enerji kaynaklı CO₂ hesabını, hedef tasarrufunu ve Zenodo medyanını yorumlar. Tesis adı ve özet veriler soruyla birlikte OpenAI API’ye gönderilir. Diğer tesisler, CSV dosyaları ve tarayıcıdaki tüm kayıt deposu gönderilmez.
+OpenAI bağlantısı kullanıldığında tesis adı, seçili tesisin son yedi kaydı ve hesaplanmış özet veriler soruyla birlikte API’ye gönderilir. Diğer tesisler, CSV dosyaları ve tarayıcıdaki tüm kayıt deposu gönderilmez. OpenAI isteği başarısız olursa asistan yerel yoruma geri döner.
 
-GitHub Pages yalnızca statik dosya sunduğu için `/api/assistant` sunucu rotasını çalıştıramaz. AI asistan için Node.js sunucusunun çalıştığı bir barındırma ortamı gerekir.
+GitHub Pages üzerinde yerel yorum modu çalışır. OpenAI modu için `/api/assistant` rotasını sunabilen bir Node.js barındırma ortamı gerekir.
 
 ## Hızlı başlangıç
 

@@ -19,6 +19,9 @@ async function withServer(options,run){
   await withServer({apiKey:''},async base=>{
     const status=await fetch(base+'/api/assistant/status').then(response=>response.json());
     assert.equal(status.configured,false);
+    const localModel=await fetch(base+'/assistant-model.js');
+    assert.equal(localModel.status,200);
+    assert.match(await localModel.text(),/function interpret/);
     const response=await fetch(base+'/api/assistant',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:'Yorumla'})});
     assert.equal(response.status,503);
   });
