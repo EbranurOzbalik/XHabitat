@@ -167,7 +167,7 @@ body { background: var(--bg); }
 
 #assistant .assistant-context-card > p {
   color: #697b84;
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.7;
 }
 
@@ -193,7 +193,7 @@ body { background: var(--bg); }
 #assistant .assistant-context > div:nth-child(3) strong,
 #assistant .assistant-context > div:nth-child(6) strong {
   color: #213b47;
-  font-size: 16px;
+  font-size: 17px;
 }
 
 #assistant .assistant-context > div:nth-child(3),
@@ -222,7 +222,7 @@ body { background: var(--bg); }
 
 #assistant .assistant-chat > .card-heading h3 {
   color: #203844;
-  font-size: 24px;
+  font-size: 25px;
   letter-spacing: -.3px;
 }
 
@@ -252,7 +252,7 @@ body { background: var(--bg); }
   color: #435e6b;
   background: #fff;
   box-shadow: none;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
 }
 
@@ -282,7 +282,7 @@ body { background: var(--bg); }
   padding: 15px 17px;
   border-radius: 6px;
   box-shadow: none;
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.7;
 }
 
@@ -327,57 +327,74 @@ body { background: var(--bg); }
 
 @media (min-width: 781px) {
   .sidebar {
-    width: 240px;
+    width: 260px;
     padding: 23px 16px 18px;
   }
 
-  main { margin-left: 240px; }
+  main { margin-left: 260px; }
 
-  .sidebar .brand { font-size: 24px; }
-  .sidebar .brand .logo { width: 31px; height: 31px; font-size: 29px; }
+  .sidebar .brand { font-size: 26px; }
+  .sidebar .brand .logo { width: 33px; height: 33px; font-size: 31px; }
 
   .sidebar .workspace {
     margin: 20px 0 23px;
     padding: 13px;
   }
 
-  .sidebar .workspace-copy > strong { font-size: 13px; }
-  .sidebar .workspace-copy > small { font-size: 11px; }
-  .sidebar .nav-label { margin: 0 10px 10px; font-size: 10px; }
+  .sidebar .workspace-copy > strong { font-size: 14px; }
+  .sidebar .workspace-copy > small { font-size: 12px; }
+  .sidebar .facility-switch-label { font-size: 11px; }
+  .sidebar .facility-switch-label select { font-size: 12px; }
+  .sidebar .workspace-manage { font-size: 11px; }
+  .sidebar .nav-label { margin: 0 10px 10px; font-size: 11px; }
   .sidebar nav { gap: 2px; }
-  .sidebar nav button { padding: 9px 10px; font-size: 13px; }
-  .sidebar nav button span { width: 25px; font-size: 17px; }
+  .sidebar nav button { padding: 9px 10px; font-size: 14px; }
+  .sidebar nav button span { width: 27px; font-size: 18px; }
 
   header { height: 64px; padding-inline: 28px; }
   .content { max-width: 1500px; padding: 25px 28px 0; }
   .page-heading { margin-bottom: 18px; }
-  .page-heading h1 { font-size: clamp(31px, 2.45vw, 35px); }
-  .page-heading p { font-size: 14px; }
+  .page-heading h1 { font-size: clamp(33px, 2.55vw, 36px); }
+  .page-heading p { font-size: 15px; }
 
   .hero { min-height: 240px; padding: 27px 34px; }
-  .hero h2 { font-size: clamp(31px, 2.8vw, 36px); }
+  .hero h2 { font-size: clamp(33px, 2.9vw, 38px); }
+  .hero p, .hero button { font-size: 15px; }
   .hero::after { top: 50px; right: 42px; }
 
   .card { padding: 22px; }
-  .card h3 { font-size: 19px; }
-  .card p, .card-heading p { font-size: 15px; }
+  .card h3 { font-size: 20px; }
+  .card p, .card-heading p { font-size: 16px; }
   .metric { padding: 18px; }
-  .metric-value { font-size: clamp(27px, 2.2vw, 31px); }
-  .metric-top { font-size: 15px; }
-  .metric-bottom { font-size: 13px; }
+  .metric-value { font-size: clamp(29px, 2.25vw, 33px); }
+  .metric-value span { font-size: 14px; }
+  .metric-top { font-size: 16px; }
+  .metric-bottom { font-size: 14px; }
 
-  label { font-size: 15px; }
-  input, select, textarea { font-size: 15px; }
-  th { font-size: 14px; }
-  td { font-size: 15px; }
+  label { font-size: 16px; }
+  input, select, textarea { font-size: 16px; }
+  th { font-size: 15px; }
+  td { font-size: 16px; }
 
   #assistant .assistant-context-card,
   #assistant .assistant-chat { padding: 22px; }
 }
 
+@media (min-width: 1180px) {
+  #assistant .assistant-suggestions {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  #assistant .assistant-suggestions .secondary {
+    justify-content: center;
+    padding-inline: 8px;
+  }
+}
+
 @media (min-width: 781px) and (max-width: 1100px) {
-  .sidebar { width: 215px; padding-inline: 13px; }
-  main { margin-left: 215px; }
+  .sidebar { width: 225px; padding-inline: 13px; }
+  main { margin-left: 225px; }
   .sidebar .workspace { padding: 11px; }
   .sidebar .profile { display: none; }
   .content { padding-inline: 22px; }
