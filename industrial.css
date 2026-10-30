@@ -167,7 +167,7 @@ body { background: var(--bg); }
 
 #assistant .assistant-context-card > p {
   color: #697b84;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.7;
 }
 
@@ -184,7 +184,7 @@ body { background: var(--bg); }
 
 #assistant .assistant-context > div span {
   color: #70818a;
-  font-size: 10px;
+  font-size: 11px;
   text-transform: uppercase;
   letter-spacing: .5px;
 }
@@ -193,7 +193,7 @@ body { background: var(--bg); }
 #assistant .assistant-context > div:nth-child(3) strong,
 #assistant .assistant-context > div:nth-child(6) strong {
   color: #213b47;
-  font-size: 15px;
+  font-size: 16px;
 }
 
 #assistant .assistant-context > div:nth-child(3),
@@ -222,7 +222,7 @@ body { background: var(--bg); }
 
 #assistant .assistant-chat > .card-heading h3 {
   color: #203844;
-  font-size: 23px;
+  font-size: 24px;
   letter-spacing: -.3px;
 }
 
@@ -252,6 +252,7 @@ body { background: var(--bg); }
   color: #435e6b;
   background: #fff;
   box-shadow: none;
+  font-size: 13px;
   font-weight: 600;
 }
 
@@ -281,7 +282,7 @@ body { background: var(--bg); }
   padding: 15px 17px;
   border-radius: 6px;
   box-shadow: none;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.7;
 }
 
@@ -341,26 +342,34 @@ body { background: var(--bg); }
   }
 
   .sidebar .workspace-copy > strong { font-size: 13px; }
-  .sidebar .workspace-copy > small { font-size: 10px; }
-  .sidebar .nav-label { margin: 0 10px 10px; font-size: 9px; }
+  .sidebar .workspace-copy > small { font-size: 11px; }
+  .sidebar .nav-label { margin: 0 10px 10px; font-size: 10px; }
   .sidebar nav { gap: 2px; }
-  .sidebar nav button { padding: 9px 10px; font-size: 12px; }
+  .sidebar nav button { padding: 9px 10px; font-size: 13px; }
   .sidebar nav button span { width: 25px; font-size: 17px; }
 
   header { height: 64px; padding-inline: 28px; }
   .content { max-width: 1500px; padding: 25px 28px 0; }
   .page-heading { margin-bottom: 18px; }
-  .page-heading h1 { font-size: clamp(29px, 2.35vw, 33px); }
-  .page-heading p { font-size: 13px; }
+  .page-heading h1 { font-size: clamp(31px, 2.45vw, 35px); }
+  .page-heading p { font-size: 14px; }
 
   .hero { min-height: 240px; padding: 27px 34px; }
   .hero h2 { font-size: clamp(31px, 2.8vw, 36px); }
   .hero::after { top: 50px; right: 42px; }
 
   .card { padding: 22px; }
-  .card h3 { font-size: 18px; }
+  .card h3 { font-size: 19px; }
+  .card p, .card-heading p { font-size: 15px; }
   .metric { padding: 18px; }
   .metric-value { font-size: clamp(27px, 2.2vw, 31px); }
+  .metric-top { font-size: 15px; }
+  .metric-bottom { font-size: 13px; }
+
+  label { font-size: 15px; }
+  input, select, textarea { font-size: 15px; }
+  th { font-size: 14px; }
+  td { font-size: 15px; }
 
   #assistant .assistant-context-card,
   #assistant .assistant-chat { padding: 22px; }
