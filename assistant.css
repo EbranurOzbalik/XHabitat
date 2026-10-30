@@ -1,0 +1,353 @@
+#assistant {
+  --ai-navy: #102f43;
+  --ai-blue: #1674a5;
+  --ai-cyan: #67c3d8;
+  --ai-lime: #c9e58c;
+  position: relative;
+}
+
+#assistant::before {
+  content: "";
+  position: absolute;
+  inset: -18px -18px auto;
+  height: 230px;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 84% 18%, rgba(103, 195, 216, .2), transparent 24%),
+    radial-gradient(circle at 12% 70%, rgba(201, 229, 140, .16), transparent 26%),
+    linear-gradient(135deg, #edf6fa, #f5f8fb 54%, #f1f7ed);
+  z-index: -1;
+}
+
+#assistant .assistant-layout {
+  grid-template-columns: minmax(300px, .76fr) minmax(520px, 1.5fr);
+  gap: 24px;
+  align-items: stretch;
+}
+
+#assistant .assistant-context-card,
+#assistant .assistant-chat {
+  border: 0;
+  border-radius: 20px;
+  box-shadow: 0 20px 55px rgba(31, 62, 83, .11);
+}
+
+#assistant .assistant-context-card {
+  position: relative;
+  overflow: hidden;
+  padding: 30px;
+  color: #fff;
+  background:
+    radial-gradient(circle at 100% 0, rgba(103, 195, 216, .27), transparent 30%),
+    radial-gradient(circle at -5% 105%, rgba(201, 229, 140, .2), transparent 32%),
+    linear-gradient(155deg, #153d54, #0d2738 72%);
+}
+
+#assistant .assistant-context-card::after {
+  content: "";
+  position: absolute;
+  width: 170px;
+  height: 170px;
+  right: -85px;
+  bottom: -90px;
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 50%;
+  box-shadow: 0 0 0 28px rgba(255,255,255,.025), 0 0 0 58px rgba(255,255,255,.018);
+  pointer-events: none;
+}
+
+#assistant .assistant-context-card .icon-tile {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  margin-bottom: 22px;
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 15px;
+  color: #173d4d;
+  background: linear-gradient(145deg, #dff2b7, #9cd9d7);
+  box-shadow: 0 10px 30px rgba(94, 204, 202, .22);
+  font-size: 21px;
+}
+
+#assistant .assistant-context-card h3 {
+  margin-bottom: 9px;
+  color: #fff;
+  font-size: 24px;
+  letter-spacing: -.45px;
+}
+
+#assistant .assistant-context-card > p {
+  margin: 0 0 25px;
+  color: #c8d9e3;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+#assistant .assistant-context {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+#assistant .assistant-context > div {
+  display: flex;
+  min-height: 88px;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 15px;
+  border: 1px solid rgba(255,255,255,.11);
+  border-radius: 13px;
+  background: rgba(255,255,255,.065);
+  backdrop-filter: blur(8px);
+}
+
+#assistant .assistant-context > div:first-child {
+  grid-column: 1 / -1;
+  min-height: auto;
+}
+
+#assistant .assistant-context > div span {
+  color: #a9c1cf;
+  font-size: 11px;
+  letter-spacing: .35px;
+}
+
+#assistant .assistant-context > div strong {
+  color: #fff;
+  font: 700 17px Manrope, sans-serif;
+  line-height: 1.35;
+  text-align: left;
+}
+
+#assistant .assistant-context > div:nth-child(3) strong,
+#assistant .assistant-context > div:nth-child(6) strong {
+  color: var(--ai-lime);
+}
+
+#assistant .assistant-privacy {
+  position: relative;
+  z-index: 1;
+  margin-top: 22px;
+  padding: 15px 16px;
+  border: 1px solid rgba(255,255,255,.1);
+  color: #cfe1ea;
+  background: rgba(4, 19, 28, .32);
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+#assistant .assistant-chat {
+  min-height: 690px;
+  padding: 30px;
+  background: rgba(255,255,255,.96);
+}
+
+#assistant .assistant-chat > .card-heading {
+  align-items: flex-start;
+  margin-bottom: 22px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e7edf2;
+}
+
+#assistant .assistant-chat > .card-heading h3 {
+  margin-bottom: 8px;
+  color: #18364b;
+  font-size: 26px;
+  letter-spacing: -.55px;
+}
+
+#assistant .assistant-chat > .card-heading p {
+  max-width: 560px;
+  color: #708393;
+  font-size: 14px;
+}
+
+#assistant .ai-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex: 0 0 auto;
+  padding: 9px 12px;
+  border: 1px solid #dce8ee;
+  font-weight: 700;
+}
+
+#assistant .ai-status::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 0 4px currentColor;
+  opacity: .7;
+}
+
+#assistant .ai-status.ready { border-color: #c9e6d1; }
+#assistant .ai-status.error { border-color: #f0d4d4; }
+
+#assistant .assistant-suggestions {
+  margin: 0 0 18px;
+  gap: 10px;
+}
+
+#assistant .assistant-suggestions .secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 14px;
+  border-color: #d8e4ec;
+  border-radius: 999px;
+  color: #31566d;
+  background: #f7fafc;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+#assistant .assistant-suggestions .secondary::before {
+  content: "✦";
+  color: #2987ab;
+  font-size: 12px;
+}
+
+#assistant .assistant-suggestions .secondary:hover {
+  border-color: #9bcbdc;
+  background: #edf7fa;
+}
+
+#assistant .ai-messages {
+  position: relative;
+  min-height: 300px;
+  max-height: 470px;
+  padding: 26px;
+  border-color: #dfe8ee;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 95% 5%, rgba(103, 195, 216, .11), transparent 28%),
+    linear-gradient(180deg, #f7fafc, #f2f6f8);
+}
+
+#assistant .ai-message {
+  position: relative;
+  max-width: 78%;
+  padding: 17px 19px;
+  border-radius: 17px;
+  box-shadow: 0 8px 22px rgba(34, 64, 84, .07);
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+#assistant .ai-message.assistant {
+  margin-left: 39px;
+  border: 0;
+  border-top-left-radius: 5px;
+  color: #304d60;
+}
+
+#assistant .ai-message.assistant::before {
+  content: "✦";
+  position: absolute;
+  top: 0;
+  left: -39px;
+  display: grid;
+  width: 29px;
+  height: 29px;
+  place-items: center;
+  border-radius: 9px;
+  color: #124b67;
+  background: linear-gradient(145deg, #dff2b7, #a5dfe2);
+  font-size: 12px;
+}
+
+#assistant .ai-message.user {
+  border-bottom-right-radius: 5px;
+  background: linear-gradient(135deg, #17698e, #124d70);
+}
+
+#assistant .ai-form {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid #dde7ed;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 9px 28px rgba(31, 62, 83, .07);
+}
+
+#assistant .ai-form label {
+  display: grid;
+  gap: 9px;
+  color: #3c5d70;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+#assistant .ai-form textarea {
+  min-height: 82px;
+  padding: 14px 16px;
+  border: 0;
+  border-radius: 11px;
+  color: #243f51;
+  background: #f3f7f9;
+  line-height: 1.6;
+}
+
+#assistant .ai-form textarea::placeholder { color: #94a4ae; }
+
+#assistant .ai-form textarea:focus {
+  outline: 3px solid rgba(78, 168, 198, .2);
+  background: #fff;
+}
+
+#assistant .ai-form > div {
+  justify-content: space-between;
+  margin-top: 11px;
+}
+
+#assistant #ai-send {
+  min-width: 118px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #17698e, #114c6d);
+  box-shadow: 0 8px 18px rgba(23, 105, 142, .2);
+}
+
+#assistant #ai-send:disabled {
+  border: 1px solid #dfe6ea;
+  color: #9aa8b0;
+  background: #edf1f3;
+  box-shadow: none;
+}
+
+#assistant .ai-form-status {
+  margin-left: auto;
+  color: #8d4a4a;
+  text-align: right;
+}
+
+#assistant .assistant-chat > .muted {
+  margin: 13px 3px 0;
+  color: #83929c;
+  font-size: 11px;
+}
+
+@media (max-width: 1100px) {
+  #assistant .assistant-layout { grid-template-columns: 1fr; }
+  #assistant .assistant-context-card { position: static; }
+  #assistant .assistant-context { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  #assistant .assistant-context > div:first-child { grid-column: 1 / -1; }
+}
+
+@media (max-width: 780px) {
+  #assistant::before { inset: -10px -8px auto; }
+  #assistant .assistant-context-card,
+  #assistant .assistant-chat { padding: 21px; border-radius: 16px; }
+  #assistant .assistant-context { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #assistant .assistant-chat > .card-heading { gap: 12px; }
+  #assistant .assistant-chat > .card-heading h3 { font-size: 22px; }
+  #assistant .ai-status { font-size: 10px; }
+  #assistant .assistant-suggestions { flex-direction: row; overflow-x: auto; padding-bottom: 4px; }
+  #assistant .assistant-suggestions .secondary { flex: 0 0 auto; }
+  #assistant .ai-messages { min-height: 260px; padding: 18px; }
+  #assistant .ai-message { max-width: 92%; }
+  #assistant .ai-form > div { align-items: stretch; flex-direction: column; }
+  #assistant .ai-form-status { margin-left: 0; text-align: left; }
+}
