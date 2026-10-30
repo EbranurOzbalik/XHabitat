@@ -1,40 +1,151 @@
-# XHabitat
+# XHabitat 🌱
 
-Yeşil Gelecek Hackathonu için çimento üretiminde enerji ve karbon takip web uygulaması.
+**Daha bilinçli üretim, daha yaşanabilir bir dünya.**
 
-## Çalıştırma
+XHabitat, çimento üretiminde elektrik tüketimini ve enerji kaynaklı karbon salımını görünür hâle getiren bir web uygulamasıdır. Yeşil Gelecek Hackathonu için geliştirilen bu prototip; günlük üretim takibini, verimlilik analizini ve Cemendus senaryo modüllerini aynı çalışma alanında birleştirir.
 
-Node.js kurulu olmalıdır. Bu klasörde terminal açın:
+> **Prototip kapsamı:** Günlük veriler kullanıcı tarafından girilir. Fabrika demosundaki sensörler sentetiktir; öneriler kural tabanlıdır. Gerçek IoT bağlantısı veya AI API entegrasyonu bulunmaz.
 
-```sh
+## Özellikler
+
+| Ekran | Neler yapabilirsin? |
+| --- | --- |
+| Genel bakış | Son üretim gününü, elektrik yoğunluğunu, tahmini karbon salımını ve son 7 kaydı görüntüle. |
+| Veri girişi | Tarih, üretim, elektrik, kömür ve çalışma süresi bilgilerini kaydet. |
+| Enerji & karbon | Karbon grafiğini incele ve emisyon katsayılarını değiştir. |
+| Tasarruf önerileri | Geçmiş kayıtlarla karşılaştırılan, kural tabanlı önerileri incele. |
+| Fabrika demosu | Cemendus sensör simülasyonunu, örnek güç profilini ve eşik uyarılarını keşfet. |
+| Senaryo analizi | Elektrik, yakıt, klinker ve üretim değişikliklerinin varsayımsal etkilerini karşılaştır. |
+
+Ek olarak CSV dışa aktarımı, tarih bazlı kayıt güncelleme ve mobil ekranlara uyumlu bir arayüz sunar.
+
+## Hızlı başlangıç
+
+**Gereksinimler:** Node.js ve modern bir tarayıcı. Depoyu klonlamak için Git gerekir. Geliştirme sırasında Node.js 24 ile doğrulanmıştır.
+
+```bash
+git clone https://github.com/EbranurOzbalik/XHabitat.git
+cd XHabitat
 npm start
 ```
 
-Tarayıcı: http://127.0.0.1:4173
+Uygulamayı [http://127.0.0.1:4173](http://127.0.0.1:4173) adresinde aç.
 
-Kurulum veya API anahtarı gerekmez. `npm run check` JavaScript sözdizimini kontrol eder.
+Proje zaten bilgisayarındaysa `package.json` dosyasının bulunduğu klasörde `npm start` çalıştırman yeterlidir. Paket kurulumu, derleme veya API anahtarı gerekmez. Sunucuyu durdurmak için terminalde `Ctrl+C` kullan.
 
-## Özellikler ve sınırlar
+Sunucu yalnızca yerel bilgisayardan erişilebilen `127.0.0.1` adresinde çalışır. GitHub deposunun public olması, web uygulamasının internette yayınlandığı anlamına gelmez.
 
-- Dört görünüm: genel bakış, veri girişi, enerji ve karbon, öneriler.
-- Yerel tarayıcı kaydı, tarih bazlı güncelleme, CSV dışa aktarımı.
-- İlk kullanıcı kaydı örnek verileri kaldırır. Demo yeniden yükleme onay ister.
-- Elektrik yoğunluğu = kWh / üretim tonu. Geçmiş karşılaştırması üretim ağırlıklıdır.
-- Enerji kaynaklı ton CO₂ = elektrik kWh × elektrik katsayısı / 1000 + kömür tonu × kömür katsayısı.
-- Başlangıç emisyon katsayıları yalnızca örnektir; gerçek raporlama için doğrulanmış tesis/şebeke/yakıt katsayıları gerekir.
-- Kalsinasyon ve diğer süreç emisyonları dahil değildir; toplam karbon ayak izi değildir.
-- Öneriler kural tabanlıdır; AI API entegrasyonu yoktur.
-- Veriler cihazlar arasında eşitlenmez. Tarayıcı verilerini silmek kayıtları kaldırır; CSV ile yedek alın.
-- Google Fonts erişilemezse sistem fontu kullanılır. Diğer işlevler dış servis gerektirmez.
+## Kullanım
 
-## Cemendus entegrasyonu
+1. İlk açılışta 7 günlük örnek üretim verilerini incele.
+2. **Günlük veri ekle** ile aynı güne ait üretim ve tüketim değerlerini gir.
+3. Özet panelinde ton başına elektrik tüketimini ve karbon tahminini görüntüle.
+4. **Enerji & karbon** ekranından uygun emisyon katsayılarını ayarla.
+5. Kayıtlarını **CSV indir** düğmesiyle dışa aktar.
+6. Günlük kayıtlarından bağımsız örnekler için **Fabrika demosu** ve **Senaryo analizi** ekranlarını kullan.
 
-Masaüstündeki `cemendus-greenai.zip` içindeki sensör, eşik uyarısı ve senaryo modülleri mevcut XHabitat arayüzüne uyarlandı. React/Cloudflare uygulaması ayrıca çalıştırılmaz; özellikler mevcut bağımlılıksız web uygulamasına entegredir.
+İlk gerçek kaydın örnek kayıtların yerini alır. Aynı tarihle yeni kayıt girmek o günü günceller. **Demoyu yeniden yükle**, onayından sonra mevcut kayıtları örnek verilerle değiştirir ve katsayıları başlangıç değerlerine döndürür.
 
-- Fabrika demosu: sentetik ölçümler, 10 saniyelik güncelleme, duraklatma, 24 saatlik örnek güç grafiği ve eşik uyarıları.
-- Senaryo analizi: elektrik, alternatif yakıt, klinker ve üretim azaltımı; yıllık çalışma süresi ve elektrik fiyatı.
-- ZIP'teki 1240 kW / 145 ton-saat ile 95 kWh/ton çelişkisi düzeltildi: örnek referans güç 13775 kW seçildi.
-- Karbon modeli örnek bileşenlere ayrıldı; varsayımlar ekranda açıklanır. Üretim azaltımı artık sonucu etkiler.
-- Günlük kayıtlar ve enerji kaynaklı emisyon hesapları simülasyondan bağımsız kalır.
-- ZIP içindeki node_modules, yerel Cloudflare veritabanları ve bozuk Markdown kod başlıkları alınmadı. ZIP değiştirilmedi.
-- Model doğrulaması: `node cemendus-model.test.cjs`.
+## Hesaplama yaklaşımı
+
+### Günlük üretim analizi
+
+```text
+Elektrik yoğunluğu (kWh/ton) = Elektrik tüketimi / Üretim miktarı
+
+Saatlik üretim (ton/saat) = Üretim miktarı / Çalışma süresi
+
+Enerji kaynaklı CO₂ (ton) =
+  Elektrik (kWh) × Elektrik katsayısı (kg CO₂/kWh) / 1.000
+  + Kömür (ton) × Kömür katsayısı (ton CO₂/ton)
+```
+
+Geçmiş karşılaştırmasında önceki kayıtların toplam elektriği, toplam üretimine bölünür. Böylece karşılaştırma üretim miktarıyla ağırlıklandırılır.
+
+Başlangıç katsayıları elektrik için **0,45 kg CO₂/kWh**, kömür için **2,4 ton CO₂/ton** olarak tanımlanmış örnek değerlerdir. Belirli bir ülke, şebeke veya yakıt standardını temsil etmez. Gerçek değerlendirmelerde uygun ve doğrulanmış katsayılar kullanılmalıdır.
+
+**Bu hesap toplam çimento karbon ayak izi değildir.** Kalsinasyon, taşıma ve diğer süreç emisyonlarını kapsamaz.
+
+### Cemendus senaryo modeli
+
+Cemendus GreenAI sensör ve simülasyon özellikleri XHabitat'ın mevcut arayüzüne uyarlanmıştır. Ayrı bir React veya Cloudflare kurulumu gerekmez.
+
+Örnek tesis başlangıç değerleri:
+
+| Parametre | Değer |
+| --- | --- |
+| Elektrik gücü | 13.775 kW |
+| Üretim hızı | 145 ton/saat |
+| Elektrik yoğunluğu | 95 kWh/ton |
+| Karbon yoğunluğu | 620 kg CO₂/ton |
+| Klinker oranı | %85 |
+| Alternatif yakıt payı | %18 |
+
+Model, örnek karbon yoğunluğunu **%60 proses, %30 yakıt ve %10 elektrik** bileşenlerine ayırır. Alternatif yakıtın eşdeğer ısı girdisinde %50 daha düşük doğrudan CO₂ ürettiğini varsayar. Bunlar doğrulanmış tesis parametreleri değil, senaryoyu açıklamak için kullanılan varsayımlardır.
+
+- Elektrik ve üretim azaltımı, ton başına tüketimi birlikte etkiler.
+- Alternatif yakıt artışı **yüzde puan**, klinker azaltımı **göreli yüzde** olarak girilir.
+- Yıllık sonuçlarda kullanıcının belirlediği çalışma süresi ve elektrik fiyatı kullanılır.
+- Yıllık karbon farkı, senaryonun üretim miktarında karşılaştırılır.
+- Üretim azalırsa elektrik tüketimindeki düşüşün tamamı verimlilik kazancı olarak yorumlanamaz.
+- Malzeme kalitesi, yatırım maliyeti ve alternatif yakıt maliyeti modellenmez.
+
+Senaryo sonuçları günlük üretim kayıtlarını veya günlük karbon hesaplarını değiştirmez. Fabrika demosu görünür ve etkin olduğunda sentetik ölçümler 10 saniyede bir yenilenir; simülasyon duraklatılabilir.
+
+## Teknoloji ve dosya yapısı
+
+Arayüz HTML, CSS ve JavaScript ile; grafikler SVG ile hazırlanmıştır. Node.js yalnızca statik dosyaları sunar. Kayıtlar tarayıcının `localStorage` alanında tutulur.
+
+```text
+XHabitat/
+├── index.html                 # Ana uygulama ekranları
+├── style.css                  # Görsel tasarım ve duyarlı yerleşim
+├── app.js                     # Kayıtlar, grafikler, hesaplamalar ve gezinme
+├── cemendus-model.js          # Senaryo, sensör ve uyarı modeli
+├── cemendus.js                # Cemendus ekranlarının entegrasyonu
+├── cemendus-model.test.cjs     # Hesaplama modeli testleri
+├── server.cjs                 # Yerel statik dosya sunucusu
+├── package.json               # Çalıştırma ve kontrol komutları
+└── README.md
+```
+
+Google Fonts erişilemezse sistem yazı tipleri kullanılır. Temel işlevler dış servis gerektirmez.
+
+## Kontroller
+
+```bash
+# Ana uygulama ve sunucu sözdizimi kontrolü
+npm run check
+
+# Cemendus dosyalarının sözdizimi kontrolü
+node --check cemendus.js
+node --check cemendus-model.js
+
+# Hesaplama modeli testleri
+node cemendus-model.test.cjs
+```
+
+Model testleri başlangıç senaryosunu, elektrik azaltımını, üretim değişiminin etkisini, yıllık hesapları, geçersiz girdileri ve uyarı eşiklerini kontrol eder.
+
+## Veri saklama
+
+- Kayıtlar kullanılan tarayıcı ve site adresine özeldir; cihazlar arasında eşitlenmez.
+- Tarayıcı verilerinin silinmesi kayıtları kaldırır. Önemli kayıtlar için CSV yedeği al.
+- CSV çıktısı üretim verilerini, hesaplanan değerleri, katsayıları ve örnek/kullanıcı verisi ayrımını içerir.
+- Bu sürümde kullanıcı hesabı, sunucu veritabanı veya CSV içe aktarımı yoktur.
+
+## Birlikte geliştirme
+
+Her commit tek bir anlamlı değişiklik içersin: hesaplama modeli, arayüz özelliği, hata düzeltmesi veya dokümantasyon gibi. Değişiklikleri ayrı bir dalda hazırlayıp kontrollerden sonra pull request açabilirsiniz.
+
+```bash
+git switch -c feat/ozellik-adi
+# Değişiklikleri yap ve ilgili kontrolleri çalıştır.
+git add <degistirilen-dosyalar>
+git commit -m "feat: yeni ozelligi acikla"
+git push -u origin feat/ozellik-adi
+```
+
+---
+
+Yeşil Gelecek Hackathonu · XHabitat
