@@ -19,4 +19,11 @@ const demo=parse(serialize({...current,demo:true}));assert.equal(demo.demo,true)
 assert.throws(()=>merge(current,parse('invalid')));
 assert.ok(parse(header+';veri_turu\n2026-10-29;500;65000;40;20;demo\n2026-10-30;500;65000;40;20;kullanici').errors.length);
 assert.equal(parse(header+'\n\n').records.length,0);
+const multi={demo:false,activeFacilityId:'plant-north',facilities:[{id:'plant-main',name:'Ana Tesis',line:'Hat 1',factors:{electricFactor:.45,coalFactor:2.4}},{id:'plant-north',name:'Kuzey; Fabrika',line:'Hat 2',factors:{electricFactor:.5,coalFactor:2.3}}],factors:{electricFactor:.5,coalFactor:2.3},records:[{facilityId:'plant-main',date:'2026-10-30',production:500,electricity:65000,coal:40,hours:20},{facilityId:'plant-north',date:'2026-10-30',production:450,electricity:54000,coal:35,hours:19}]};
+const multiUpdated=merge(multi,parse(header+'\n2026-10-30;475;56000;36;19'),'replace');
+assert.equal(multiUpdated.state.records.find(record=>record.facilityId==='plant-main').production,500);
+assert.equal(multiUpdated.state.records.find(record=>record.facilityId==='plant-north').production,475);
+const multiCSV=serialize(multi);
+assert.ok(multiCSV.includes('"Kuzey; Fabrika"'));
+assert.equal(parse(multiCSV).records.length,1);
 console.log('CSV round-trip, delimiters, decimals, dates, invalid rows, duplicate dates, merging and demo provenance passed.');
