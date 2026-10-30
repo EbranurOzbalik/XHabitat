@@ -9,6 +9,66 @@
 
 body { background: var(--bg); }
 
+html {
+  scroll-behavior: smooth;
+  scroll-snap-type: y proximity;
+  scrollbar-color: #78909b #e8edef;
+  scrollbar-width: thin;
+}
+
+html::-webkit-scrollbar { width: 11px; }
+html::-webkit-scrollbar-track { background: #e8edef; }
+html::-webkit-scrollbar-thumb {
+  border: 3px solid #e8edef;
+  border-radius: 999px;
+  background: #78909b;
+}
+
+.view:not([hidden]) { animation: page-slide-in .34s ease-out both; }
+
+.view > .hero,
+.view > .notice,
+.view > .section-title,
+.view > .metrics,
+.view > .dashboard-grid,
+.view > .card,
+.view > .table-card,
+.view > .form-layout,
+.view > .insight-grid,
+.view > .facilities-layout,
+.view > .assistant-layout {
+  scroll-margin-top: 82px;
+  scroll-snap-align: start;
+  scroll-snap-stop: normal;
+}
+
+@keyframes page-slide-in {
+  from { opacity: 0; transform: translateX(18px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes section-reveal {
+  from { opacity: .25; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@supports (animation-timeline: view()) {
+  .view > .hero,
+  .view > .section-title,
+  .view > .metrics,
+  .view > .dashboard-grid,
+  .view > .card,
+  .view > .table-card,
+  .view > .form-layout,
+  .view > .insight-grid,
+  .view > .facilities-layout,
+  .view > .assistant-layout {
+    animation: section-reveal linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 38%;
+  }
+}
+
 .sidebar {
   overflow: hidden;
   border-right: 1px solid var(--line);
@@ -381,6 +441,9 @@ body { background: var(--bg); }
 }
 
 @media (min-width: 1180px) {
+  .sidebar { width: 300px; padding-inline: 20px; }
+  main { margin-left: 300px; }
+
   #assistant .assistant-suggestions {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -404,4 +467,10 @@ body { background: var(--bg); }
   .sidebar .profile { display: none; }
   .sidebar .workspace { margin-block: 14px 17px; }
   .sidebar nav button { padding-block: 8px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; scroll-snap-type: none; }
+  .view:not([hidden]),
+  .view > * { animation: none !important; }
 }
