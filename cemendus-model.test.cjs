@@ -1,0 +1,13 @@
+const assert=require('node:assert/strict');
+const model=require('./cemendus-model.js');
+const base={energyReductionPct:0,altFuelIncreasePct:0,clinkerReductionPct:0,productionReductionPct:0,annualHours:6000,costPerMwh:85};
+const unchanged=model.simulate(base);
+assert.equal(unchanged.energyIntensity,95);assert.equal(unchanged.carbonIntensity,620);assert.equal(unchanged.annualCarbonTons,0);
+const reduction=model.simulate({...base,energyReductionPct:10});
+assert.equal(reduction.energyIntensity,85.5);assert.equal(reduction.annualEnergyMwh,8265);
+const lowerProduction=model.simulate({...base,productionReductionPct:20});
+assert.ok(lowerProduction.energyIntensity>95);assert.ok(lowerProduction.annualCarbonTons<0);
+assert.equal(model.simulate({...base,annualHours:0}).annualCostUsd,0);
+assert.throws(()=>model.simulate({...base,energyReductionPct:101}));assert.throws(()=>model.simulate({...base,annualHours:NaN}));
+assert.ok(model.alerts({motorTempC:90,vibrationMms:6,energyKw:16000,productionTph:100,capacityPct:70}).length===4);
+console.log('Cemendus: baseline, reduction, production effects, annualization, validation and alerts passed.');
