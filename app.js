@@ -2,7 +2,8 @@ const $ = selector => document.querySelector(selector);
 const fmt = (number, digits = 0) => new Intl.NumberFormat('tr-TR', {maximumFractionDigits: digits}).format(number);
 const key = 'xhabitat-v1';
 const defaultFactors = () => ({electricFactor: .45, coalFactor: 2.4});
-const createFacility = (id = 'plant-main', name = 'Ana Tesis', line = 'Genel üretim hattı', factors = defaultFactors()) => ({id, name, line, factors: {...factors}});
+const defaultGoal = () => ({targetIntensity: 110, electricityPrice: 3});
+const createFacility = (id = 'plant-main', name = 'Ana Tesis', line = 'Genel üretim hattı', factors = defaultFactors(), goal = defaultGoal()) => ({id, name, line, factors: {...factors}, goal: {...goal}});
 
 const demo = () => {
   const facility = createFacility();
@@ -23,11 +24,12 @@ const demo = () => {
 };
 
 const validFactors = factors => factors && ['electricFactor', 'coalFactor'].every(field => Number.isFinite(factors[field]) && factors[field] >= 0);
+const validGoal = goal => goal && Number.isFinite(goal.targetIntensity) && goal.targetIntensity > 0 && Number.isFinite(goal.electricityPrice) && goal.electricityPrice >= 0;
 const validRecord = record => record && /^\d{4}-\d{2}-\d{2}$/.test(record.date) && ['production', 'electricity', 'coal', 'hours'].every(field => Number.isFinite(record[field])) && record.production > 0 && record.hours > 0 && record.hours <= 24 && record.electricity >= 0 && record.coal >= 0;
 function normalizeState(raw) {
   if (!raw || !Array.isArray(raw.records) || !raw.records.every(validRecord)) return demo();
   const legacyFactors = validFactors(raw.factors) ? raw.factors : defaultFactors();
-  let facilities = Array.isArray(raw.facilities) ? raw.facilities.filter(item => item && typeof item.id === 'string' && item.id && typeof item.name === 'string' && item.name.trim()).map(item => createFacility(item.id, item.name.trim(), String(item.line || '').trim() || 'Genel üretim hattı', validFactors(item.factors) ? item.factors : legacyFactors)) : [];
+  let facilities = Array.isArray(raw.facilities) ? raw.facilities.filter(item => item && typeof item.id === 'string' && item.id && typeof item.name === 'string' && item.name.trim()).map(item => createFacility(item.id, item.name.trim(), String(item.line || '').trim() || 'Genel üretim hattı', validFactors(item.factors) ? item.factors : legacyFactors, validGoal(item.goal) ? item.goal : defaultGoal())) : [];
   if (!facilities.length) facilities = [createFacility('plant-main', 'Ana Tesis', 'Genel üretim hattı', legacyFactors)];
   const ids = new Set(facilities.map(item => item.id));
   const activeFacilityId = ids.has(raw.activeFacilityId) ? raw.activeFacilityId : facilities[0].id;
@@ -127,6 +129,25 @@ function chart(target, calculator, unit) {
   $(target).innerHTML = svg + '</svg>';
 }
 
+function renderSavings() {
+  const current = activeFacility(), rows = ordered(), form = $('#goal-form');
+  form.elements.targetIntensity.value = current.goal.targetIntensity;
+  form.elements.electricityPrice.value = current.goal.electricityPrice;
+  if (!rows.length) {
+    $('#savings-results').innerHTML = '<div class="note">Tasarruf hesabı için seçili tesise en az bir üretim kaydı ekle.</div>';
+    return;
+  }
+  const production = rows.reduce((sum, record) => sum + record.production, 0);
+  const electricity = rows.reduce((sum, record) => sum + record.electricity, 0);
+  const currentIntensity = electricity / production;
+  const reduction = Math.max(0, currentIntensity - current.goal.targetIntensity);
+  const savedElectricity = reduction * production;
+  const savedCarbon = savedElectricity * current.factors.electricFactor / 1000;
+  const savedCost = savedElectricity * current.goal.electricityPrice;
+  const targetMessage = reduction > 0 ? `Hedefe ulaşılırsa kayıtlı dönemde ton başına ${fmt(reduction, 1)} kWh daha az elektrik kullanılır.` : 'Mevcut ortalama hedef değerin altında veya hedefe eşit; bu dönem için ek tasarruf hesaplanmadı.';
+  $('#savings-results').innerHTML = `<div class="savings-summary"><div><span>Mevcut ortalama</span><strong>${fmt(currentIntensity, 1)} <small>kWh/ton</small></strong></div><div><span>Tesis hedefi</span><strong>${fmt(current.goal.targetIntensity, 1)} <small>kWh/ton</small></strong></div></div><div class="savings-grid"><article><span>Elektrik tasarrufu</span><strong>${fmt(savedElectricity, 0)}</strong><small>kWh</small></article><article><span>Enerji kaynaklı CO₂</span><strong>${fmt(savedCarbon, 2)}</strong><small>ton CO₂</small></article><article><span>Tahmini maliyet</span><strong>${fmt(savedCost, 0)}</strong><small>TL</small></article></div><p class="savings-message">${targetMessage}</p>`;
+}
+
 function fillFacilitySelect(select, selectedId) {
   select.replaceChildren();
   for (const facility of state.facilities) {
@@ -179,6 +200,7 @@ function render() {
   $('#quick-insight').textContent = tips[0].text;
   $('#insight-list').innerHTML = tips.map((tip, index) => `<article class="card"><span class="insight-number">ÖNERİ 0${index + 1} / VERİ ODAKLI</span><h3>${tip.title}</h3><p>${tip.text}</p></article>`).join('');
   Object.entries(current.factors).forEach(([field, value]) => $('#factor-form').elements[field].value = value);
+  renderSavings();
 }
 
 function resetRecordForm() {
@@ -208,6 +230,7 @@ function renderEmpty() {
   $('#insight-list').innerHTML = '<article class="card"><h3>Analiz için veri bekleniyor</h3><p>Seçili tesisin ilk üretim kaydından sonra öneriler burada görünecek.</p></article>';
   $('#export').disabled = true;
   Object.entries(current.factors).forEach(([field, value]) => $('#factor-form').elements[field].value = value);
+  renderSavings();
 }
 
 $('#records').onclick = event => {
@@ -260,6 +283,16 @@ $('#factor-form').onsubmit = event => {
   activeFacility().factors = factors;
   save(); render();
   $('#factor-status').textContent = `${activeFacility().name} için katsayılar uygulandı.`;
+};
+
+$('#goal-form').onsubmit = event => {
+  event.preventDefault();
+  if (!event.currentTarget.reportValidity()) return;
+  const data = new FormData(event.currentTarget), goal = {targetIntensity: Number(data.get('targetIntensity')), electricityPrice: Number(data.get('electricityPrice'))};
+  if (!validGoal(goal)) return;
+  activeFacility().goal = goal;
+  const persisted = save(); render();
+  if (persisted) $('#goal-status').textContent = `${activeFacility().name} için hedef ve elektrik fiyatı kaydedildi.`;
 };
 
 $('#facility-switch').onchange = event => {

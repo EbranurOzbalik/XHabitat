@@ -22,6 +22,17 @@ Ek olarak seçili tesis için CSV içe/dışa aktarımı, tarih bazlı kayıt g�
 
 Enerji & karbon ekranındaki karşılaştırma göstergesi, seçili tesisin kayıtlarından üretim ağırlıklı elektrik yoğunluğunu hesaplar ve bunu Zenodo CCID verisindeki sayısal çimento kayıtlarının medyanıyla yan yana gösterir. Kaynak Çin’deki farklı bölgeler, belge yılları ve üretim koşulları içerdiği için medyan değer hedef veya performans standardı olarak kullanılmaz.
 
+Aynı ekrandaki hedef ve tasarruf hesabında her tesis için hedef elektrik yoğunluğu ile elektrik fiyatı ayrı kaydedilir. Potansiyel tasarruf, seçili tesisin kayıtlı dönemindeki toplam üretim ve elektrik tüketimi üzerinden hesaplanır:
+
+```text
+Mevcut yoğunluk = Toplam elektrik / Toplam üretim
+Elektrik tasarrufu = max(0, Mevcut yoğunluk - Hedef yoğunluk) × Toplam üretim
+Enerji kaynaklı CO₂ tasarrufu = Elektrik tasarrufu × Elektrik katsayısı / 1.000
+Tahmini maliyet tasarrufu = Elektrik tasarrufu × Elektrik fiyatı
+```
+
+Sonuçlar yalnızca kayıtlı dönemi kapsar; yıllık tahmin veya tasarruf garantisi değildir.
+
 ## Hızlı başlangıç
 
 **Gereksinimler:** Node.js ve modern bir tarayıcı. Depoyu klonlamak için Git gerekir. Geliştirme sırasında Node.js 24 ile doğrulanmıştır.

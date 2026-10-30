@@ -16,9 +16,11 @@ function harness(saved){
   function node(selector){if(!nodes.has(selector))nodes.set(selector,element());return nodes.get(selector)}
   const recordFields=Object.fromEntries(['facilityId','date','production','electricity','coal','hours'].map(key=>[key,element()]));
   const factorFields=Object.fromEntries(['electricFactor','coalFactor'].map(key=>[key,element()]));
+  const goalFields=Object.fromEntries(['targetIntensity','electricityPrice'].map(key=>[key,element()]));
   const facilityFields=Object.fromEntries(['name','line'].map(key=>[key,element()]));
   node('#record-form').elements=recordFields;
   node('#factor-form').elements=factorFields;
+  node('#goal-form').elements=goalFields;
   node('#facility-form').elements=facilityFields;
   const storage={value:saved};let answer=true;
   const context=vm.createContext({
@@ -30,7 +32,7 @@ function harness(saved){
   });
   vm.runInContext(fs.readFileSync('app.js','utf8'),context);
   return {
-    context,storage,node,recordFields,factorFields,facilityFields,answer:value=>answer=value,
+    context,storage,node,recordFields,factorFields,goalFields,facilityFields,answer:value=>answer=value,
     run:source=>vm.runInContext(source,context),
     click:(kind,date,facilityId='plant-main')=>node('#records').onclick({target:{closest:selector=>selector===`[data-${kind}]`?{dataset:{[kind]:date,facility:facilityId}}:null}})
   };
@@ -97,9 +99,19 @@ persisted=JSON.parse(facilities.storage.value);
 assert.equal(persisted.facilities.find(item=>item.id==='plant-north').factors.electricFactor,.61);
 assert.equal(persisted.facilities.find(item=>item.id==='plant-main').factors.electricFactor,.45);
 
+facilities.goalFields.targetIntensity.value='100';
+facilities.goalFields.electricityPrice.value='3.5';
+facilities.node('#goal-form').onsubmit({preventDefault(){},currentTarget:facilities.node('#goal-form')});
+persisted=JSON.parse(facilities.storage.value);
+assert.deepEqual(persisted.facilities.find(item=>item.id==='plant-north').goal,{targetIntensity:100,electricityPrice:3.5});
+assert.deepEqual(persisted.facilities.find(item=>item.id==='plant-main').goal,{targetIntensity:110,electricityPrice:3});
+assert.match(facilities.node('#savings-results').innerHTML,/9[.\u00a0]?000/);
+
 const legacy=harness(JSON.stringify({demo:false,factors:{electricFactor:.45,coalFactor:2.4},records:[{date:'2026-10-29',production:500,electricity:65000,coal:40,hours:20}]}));
 persisted=legacy.run('JSON.parse(JSON.stringify(state))');
 assert.equal(persisted.facilities[0].id,'plant-main');
 assert.equal(persisted.records[0].facilityId,'plant-main');
+assert.equal(persisted.facilities[0].goal.targetIntensity,110);
+assert.equal(persisted.facilities[0].goal.electricityPrice,3);
 
-console.log('Record editing, deletion, empty facility state, facility creation, factor isolation and legacy migration passed.');
+console.log('Record editing, deletion, empty facility state, facility creation, factor and goal isolation, savings and legacy migration passed.');
