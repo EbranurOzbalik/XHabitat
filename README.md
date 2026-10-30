@@ -14,6 +14,7 @@ XHabitat, çimento üretiminde elektrik tüketimini ve enerji kaynaklı karbon s
 | Veri girişi | Tarih, üretim, elektrik, kömür ve çalışma süresi bilgilerini kaydet. |
 | Enerji & karbon | Karbon grafiğini incele ve emisyon katsayılarını değiştir. |
 | Tasarruf önerileri | Geçmiş kayıtlarla karşılaştırılan, kural tabanlı önerileri incele. |
+| AI asistan | Seçili tesisin enerji, karbon, hedef ve sektör karşılaştırması çıktılarını doğal dille yorumlat. |
 | Tesisler | Fabrika veya üretim hatlarını ayrı tanımla; aktif tesisin kayıtlarını, grafiklerini ve katsayılarını görüntüle. |
 | Fabrika demosu | Cemendus sensör simülasyonunu, örnek güç profilini ve eşik uyarılarını keşfet. |
 | Senaryo analizi | Elektrik, yakıt, klinker ve üretim değişikliklerinin varsayımsal etkilerini karşılaştır. |
@@ -32,6 +33,19 @@ Tahmini maliyet tasarrufu = Elektrik tasarrufu × Elektrik fiyatı
 ```
 
 Sonuçlar yalnızca kayıtlı dönemi kapsar; yıllık tahmin veya tasarruf garantisi değildir.
+
+## AI asistan kurulumu
+
+AI asistan, yeni metin uygulamaları için önerilen [OpenAI Responses API](https://developers.openai.com/api/docs/guides/text) ile çalışır. API anahtarı tarayıcı koduna yazılmaz; yalnızca yerel Node.js sunucusundaki ortam değişkeninden okunur.
+
+1. `.env.example` dosyasını `.env` adıyla kopyala.
+2. `OPENAI_API_KEY` alanına kendi OpenAI API anahtarını yaz.
+3. Gerekirse `OPENAI_MODEL` değerini hesabında erişebildiğin bir modelle değiştir.
+4. `npm start` komutuyla sunucuyu yeniden başlat.
+
+Asistan seçili tesisin son yedi kaydını, üretim ağırlıklı elektrik yoğunluğunu, enerji kaynaklı CO₂ hesabını, hedef tasarrufunu ve Zenodo medyanını yorumlar. Tesis adı ve özet veriler soruyla birlikte OpenAI API’ye gönderilir. Diğer tesisler, CSV dosyaları ve tarayıcıdaki tüm kayıt deposu gönderilmez.
+
+GitHub Pages yalnızca statik dosya sunduğu için `/api/assistant` sunucu rotasını çalıştıramaz. AI asistan için Node.js sunucusunun çalıştığı bir barındırma ortamı gerekir.
 
 ## Hızlı başlangıç
 

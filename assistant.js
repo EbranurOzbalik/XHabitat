@@ -1,0 +1,80 @@
+const aiState={configured:false,busy:false,messages:[{role:'assistant',text:'Merhaba! Seçili tesisin enerji, karbon, hedef ve karşılaştırma çıktılarını yorumlayabilirim. Bir hazır soru seç veya kendi sorunu yaz.'}]};
+const aiRound=(value,digits=3)=>Number.isFinite(value)?Number(value.toFixed(digits)):null;
+const aiMedian=values=>{const sorted=[...values].sort((a,b)=>a-b),middle=Math.floor(sorted.length/2);return sorted.length%2?sorted[middle]:(sorted[middle-1]+sorted[middle])/2};
+
+function buildAssistantContext(){
+  const facility=activeFacility(),rows=ordered(),production=rows.reduce((sum,record)=>sum+record.production,0),electricity=rows.reduce((sum,record)=>sum+record.electricity,0);
+  const weighted=production?electricity/production:null,last=rows.at(-1),previous=rows.slice(0,-1),previousProduction=previous.reduce((sum,record)=>sum+record.production,0),previousElectricity=previous.reduce((sum,record)=>sum+record.electricity,0);
+  const reduction=weighted===null?0:Math.max(0,weighted-facility.goal.targetIntensity),savedElectricity=reduction*production;
+  const references=typeof zenRecords!=='undefined'?zenRecords.map(record=>record.cement_electricity).filter(Number.isFinite):[];
+  return {
+    facility:{name:facility.name,line:facility.line},demo:state.demo,
+    summary:{recordCount:rows.length,totalProductionTon:aiRound(production),weightedIntensityKwhTon:aiRound(weighted),latestIntensityKwhTon:aiRound(last?intensity(last):null),previousWeightedIntensityKwhTon:aiRound(previousProduction?previousElectricity/previousProduction:null),energyCo2Ton:aiRound(rows.reduce((sum,record)=>sum+carbon(record),0))},
+    goal:{targetIntensityKwhTon:facility.goal.targetIntensity,electricityPriceTlKwh:facility.goal.electricityPrice,potentialElectricitySavingKwh:aiRound(savedElectricity),potentialEnergyCo2SavingTon:aiRound(savedElectricity*facility.factors.electricFactor/1000),potentialCostSavingTl:aiRound(savedElectricity*facility.goal.electricityPrice)},
+    comparison:{zenodoMedianKwhTon:references.length?aiRound(aiMedian(references)):null,numericRecordCount:references.length},
+    factors:{electricKgCo2Kwh:facility.factors.electricFactor,coalTonCo2Ton:facility.factors.coalFactor},
+    records:rows.slice(-7).map(record=>({date:record.date,productionTon:record.production,electricityKwh:record.electricity,coalTon:record.coal,hours:record.hours,intensityKwhTon:aiRound(intensity(record)),energyCo2Ton:aiRound(carbon(record))}))
+  };
+}
+
+function renderAssistantContext(){
+  const context=buildAssistantContext(),summary=context.summary,goal=context.goal;
+  const items=[
+    ['Tesis',facilityLabel(activeFacility())],
+    ['Kayıt',`${summary.recordCount} gün`],
+    ['Ortalama yoğunluk',summary.weightedIntensityKwhTon===null?'Veri yok':`${fmt(summary.weightedIntensityKwhTon,1)} kWh/ton`],
+    ['Enerji kaynaklı CO₂',`${fmt(summary.energyCo2Ton||0,1)} ton`],
+    ['Tesis hedefi',`${fmt(goal.targetIntensityKwhTon,1)} kWh/ton`],
+    ['Potansiyel tasarruf',`${fmt(goal.potentialElectricitySavingKwh||0)} kWh`]
+  ];
+  $('#assistant-context').className='assistant-context';
+  $('#assistant-context').replaceChildren();
+  for(const [label,value] of items){const row=document.createElement('div'),name=document.createElement('span'),result=document.createElement('strong');name.textContent=label;result.textContent=value;row.append(name,result);$('#assistant-context').append(row)}
+}
+
+function renderAiMessages(){
+  const panel=$('#ai-messages');
+  panel.replaceChildren();
+  for(const message of aiState.messages){const item=document.createElement('div');item.className=`ai-message ${message.role}${message.loading?' loading':''}`;item.textContent=message.text;panel.append(item)}
+  panel.scrollTop=panel.scrollHeight;
+}
+
+function setAiSendDisabled(disabled){
+  const button=$('#ai-send');
+  button.disabled=disabled;
+  button.className=disabled?'secondary':'primary';
+}
+
+function setAiAvailability(configured,model){
+  aiState.configured=configured;
+  const status=$('#ai-status');
+  status.textContent=configured?`Hazır · ${model}`:'API anahtarı gerekli';
+  status.className=`ai-status ${configured?'ready':'error'}`;
+  setAiSendDisabled(!configured);
+  if(!configured)$('#ai-form-status').textContent='Sunucuda OPENAI_API_KEY tanımlanmalı.';
+}
+
+async function loadAiStatus(){
+  try{const response=await fetch('/api/assistant/status');if(!response.ok)throw Error();const data=await response.json();setAiAvailability(Boolean(data.configured),data.model||'OpenAI');}
+  catch{setAiAvailability(false);$('#ai-form-status').textContent='AI sunucusuna bağlanılamadı. Uygulamayı npm start ile aç.';}
+}
+
+async function askAssistant(question){
+  if(aiState.busy||!aiState.configured)return;
+  const context=buildAssistantContext();
+  if(!context.summary.recordCount){$('#ai-form-status').textContent='Önce seçili tesise en az bir üretim kaydı ekle.';return;}
+  aiState.busy=true;setAiSendDisabled(true);$('#ai-form-status').textContent='';
+  aiState.messages.push({role:'user',text:question},{role:'assistant',text:'Verileri yorumluyorum…',loading:true});renderAiMessages();
+  try{
+    const history=aiState.messages.slice(0,-2).filter(message=>!message.loading).slice(-6);
+    const response=await fetch('/api/assistant',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question,context,history})});
+    const data=await response.json();if(!response.ok)throw Error(data.error||'AI yanıtı alınamadı.');
+    aiState.messages[aiState.messages.length-1]={role:'assistant',text:data.answer};
+  }catch(error){aiState.messages[aiState.messages.length-1]={role:'assistant',text:`Yanıt oluşturulamadı: ${error.message}`};}
+  finally{aiState.busy=false;setAiSendDisabled(!aiState.configured);renderAiMessages();}
+}
+
+$('#ai-form').onsubmit=event=>{event.preventDefault();const question=$('#ai-question').value.trim();if(question.length<2)return;$('#ai-question').value='';askAssistant(question)};
+document.querySelectorAll('[data-ai-question]').forEach(button=>button.onclick=()=>{const question=button.dataset.aiQuestion;$('#ai-question').value=question;askAssistant(question)});
+const renderWithAssistant=render;render=function(){renderWithAssistant();renderAssistantContext();};
+renderAssistantContext();renderAiMessages();loadAiStatus();
