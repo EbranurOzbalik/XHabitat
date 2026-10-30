@@ -167,3 +167,11 @@ python scripts/import-zenodo.py "Energy statistics for China cement plants.xlsx"
 ```
 
 İçe aktarıcı kaynak MD5 değerini `aa3d3d467aabb2953e6bfede5f615491` ile doğrular. Uygulamanın normal çalışması için Python veya Excel dosyası gerekmez. Yerel JSON sayesinde sunumda Zenodo bağlantısına bağımlılık yoktur.
+
+## Kayıt düzenleme ve silme
+
+Üretim günlüğü tüm kayıtları listeler. Her satırdaki **Düzenle** düğmesi mevcut değerleri forma getirir; **Düzenlemekten vazgeç** kaydı değiştirmeden döner. Tarih değişikliği kaydı yeni tarihe taşır. Hedef tarihte kayıt varsa üzerine yazmadan önce onay istenir.
+
+**Sil** seçilen tarih için onay ister. Son kayıt silindiğinde boş durum gösterilir ve sayfa yenilendiğinde demo otomatik geri gelmez. Silme geri alınamaz; gerektiğinde önceden CSV yedeği alın.
+
+Kayıt yönetimi testleri: `node records.test.cjs`.
