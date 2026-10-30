@@ -38,6 +38,8 @@ Sonuçlar yalnızca kayıtlı dönemi kapsar; yıllık tahmin veya tasarruf gara
 
 AI asistan varsayılan olarak API anahtarı gerektirmez. Seçili tesisin yoğunluğunu, eğilimini, hedef farkını, teorik tasarrufunu, enerji kaynaklı karbonunu ve Zenodo karşılaştırmasını tarayıcı içinde yorumlar. Bu modda tesis verileri dışarı gönderilmez.
 
+**Optimizasyon planı** seçeneği hedef açığını ve kayıtlı dönem fırsatını sayısallaştırır, son yedi kayıttaki en iyi ve en yüksek tüketimli günleri iç kıyas olarak gösterir ve aksiyonları önceliklendirir. Ürün tipi, klinker oranı, vardiya, değirmen çalışma/duruş süresi, ton/saat ve kalite gibi veriler mevcut değilse asistan bunları eksik veri olarak belirtir. Öneriler otomatik proses ayarı değildir; tek değişkenli kontrollü denemeler için karar desteğidir.
+
 İsteğe bağlı olarak yeni metin uygulamaları için önerilen [OpenAI Responses API](https://developers.openai.com/api/docs/guides/text) bağlanabilir. API anahtarı tarayıcı koduna yazılmaz; yalnızca yerel Node.js sunucusundaki ortam değişkeninden okunur.
 
 1. `.env.example` dosyasını `.env` adıyla kopyala.

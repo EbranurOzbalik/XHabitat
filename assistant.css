@@ -232,6 +232,16 @@
   background: #edf7fa;
 }
 
+#assistant .assistant-suggestions .optimization-suggestion {
+  border-color: transparent;
+  color: #fff;
+  background: linear-gradient(135deg, #17698e, #114c6d);
+  box-shadow: 0 8px 18px rgba(23, 105, 142, .16);
+}
+
+#assistant .assistant-suggestions .optimization-suggestion::before { color: var(--ai-lime); }
+#assistant .assistant-suggestions .optimization-suggestion:hover { border-color: transparent; background: linear-gradient(135deg, #125f82, #0d415f); }
+
 #assistant .ai-messages {
   position: relative;
   min-height: 300px;

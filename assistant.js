@@ -92,6 +92,9 @@ async function askAssistant(question){
 }
 
 $('#ai-form').onsubmit=event=>{event.preventDefault();const question=$('#ai-question').value.trim();if(question.length<2)return;$('#ai-question').value='';askAssistant(question)};
+const optimizationButton=document.createElement('button');
+optimizationButton.type='button';optimizationButton.className='secondary optimization-suggestion';optimizationButton.dataset.aiQuestion='Verilerime göre önceliklendirilmiş bir verimlilik optimizasyon planı oluştur.';optimizationButton.textContent='Optimizasyon planı';
+$('.assistant-suggestions').prepend(optimizationButton);
 document.querySelectorAll('[data-ai-question]').forEach(button=>button.onclick=()=>{const question=button.dataset.aiQuestion;$('#ai-question').value='';askAssistant(question)});
 const aiHeadingActions=document.createElement('div'),aiClear=document.createElement('button'),aiStatus=$('#ai-status');
 aiHeadingActions.className='ai-heading-actions';aiClear.type='button';aiClear.className='secondary ai-clear';aiClear.textContent='Yeni sohbet';
