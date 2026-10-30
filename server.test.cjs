@@ -22,6 +22,10 @@ async function withServer(options,run){
     const localModel=await fetch(base+'/assistant-model.js');
     assert.equal(localModel.status,200);
     assert.match(await localModel.text(),/function interpret/);
+    const interfaceHtml=await fetch(base+'/').then(response=>response.text());
+    assert.match(interfaceHtml,/Hesaplama motoru/);
+    assert.match(interfaceHtml,/Tesis bağlamı/);
+    assert.match(interfaceHtml,/AI yorumu/);
     const industrialTheme=await fetch(base+'/industrial.css');
     assert.equal(industrialTheme.status,200);
     assert.match(await industrialTheme.text(),/Restrained industrial interface/);

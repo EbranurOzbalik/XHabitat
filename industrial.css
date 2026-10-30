@@ -592,21 +592,33 @@ input::placeholder, textarea::placeholder { color: #87969d; }
 #assistant .ai-status { display: inline-flex; min-height: 34px; align-items: center; gap: 6px; padding: 7px 9px; border: 1px solid #ccdce2; border-radius: 6px; color: #326174; background: #edf4f6; font-size: 11px; font-weight: 750; }
 #assistant .ai-status::before { width: 6px; height: 6px; box-shadow: none; }
 #assistant .ai-clear { min-height: 34px; padding: 7px 9px; border-radius: 6px; font-size: 11px; }
-#assistant .assistant-suggestions { order: 2; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 7px; margin: 0 0 11px; }
+#assistant .ai-process { order: 2; display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; align-items: center; gap: 8px; margin-bottom: 8px; padding: 10px; border: 1px solid var(--line); border-radius: 8px; background: #f6f8f9; }
+#assistant .ai-process > div { display: flex; min-width: 0; align-items: center; gap: 9px; }
+#assistant .ai-process b { display: grid; width: 25px; height: 25px; flex: 0 0 25px; place-items: center; border-radius: 50%; color: #fff; background: var(--brand); font-size: 11px; }
+#assistant .ai-process span { display: grid; min-width: 0; gap: 1px; }
+#assistant .ai-process strong { color: var(--ink); font-size: 12px; line-height: 1.25; }
+#assistant .ai-process small { overflow: hidden; color: var(--muted); font-size: 10px; line-height: 1.35; text-overflow: ellipsis; white-space: nowrap; }
+#assistant .ai-process i { color: #8ba0aa; font-size: 15px; font-style: normal; }
+#assistant .ai-mode-description { order: 3; margin: 0 0 10px; padding: 8px 10px; border-left: 3px solid var(--accent); color: #405a65; background: #f2f6ed; font-size: 11px; font-weight: 650; line-height: 1.5; }
+#assistant .assistant-suggestions { order: 4; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 7px; margin: 0 0 11px; }
 #assistant .assistant-suggestions .secondary { display: flex; min-height: 42px; align-items: center; justify-content: center; padding: 8px; border: 1px solid var(--line-strong); border-radius: 7px; color: #3b5662; background: #fff; box-shadow: none; font-size: 12px; font-weight: 750; text-align: center; }
 #assistant .assistant-suggestions .optimization-suggestion,
 #assistant .assistant-suggestions .optimization-suggestion:hover { border-color: var(--brand-dark); color: #fff; background: var(--brand-dark); box-shadow: none; }
-#assistant .ai-form { order: 3; flex: 0 0 auto; margin: 0; padding: 11px 12px; border: 1px solid var(--line); border-radius: 8px; background: #fff; box-shadow: none; }
+#assistant .ai-form { order: 5; flex: 0 0 auto; margin: 0; padding: 11px 12px; border: 1px solid var(--line); border-radius: 8px; background: #fff; box-shadow: none; }
 #assistant .ai-form label { gap: 6px; color: #3a5561; font-size: 12px; }
 #assistant .ai-form textarea { width: 100%; height: 58px; min-height: 58px; max-height: 58px; resize: none; padding: 10px 12px; border: 1px solid var(--line); border-radius: 7px; color: var(--ink); background: var(--surface-soft); line-height: 1.5; }
 #assistant .ai-form > div { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 8px; }
 #assistant #ai-send { min-width: 110px; border-radius: 7px; background: var(--brand); box-shadow: none; }
 #assistant .ai-form-status { margin-left: auto; color: #8a4545; font-size: 11px; text-align: right; }
-#assistant .ai-messages { position: static; order: 4; display: flex; min-height: 0; max-height: none; flex: 0 0 auto; flex-direction: column; gap: 10px; overflow: visible; margin-top: 11px; padding: 14px; border: 1px solid var(--line); border-radius: 8px; background: #f3f6f7; box-shadow: none; }
+#assistant .ai-messages { position: static; order: 6; display: flex; min-height: 0; max-height: none; flex: 0 0 auto; flex-direction: column; gap: 10px; overflow: visible; margin-top: 11px; padding: 14px; border: 1px solid var(--line); border-radius: 8px; background: #f3f6f7; box-shadow: none; }
 #assistant .ai-message { max-width: 100%; padding: 12px 14px; border-radius: 7px; font-size: 14px; font-weight: 500; line-height: 1.6; white-space: pre-wrap; }
 #assistant .ai-message.assistant { align-self: stretch; margin: 0; border: 1px solid #dce4e7; color: #213b47; background: #fff; }
 #assistant .ai-message.user { align-self: flex-end; max-width: 82%; color: #fff; background: #285d70; }
-#assistant .assistant-chat > .muted { order: 5; margin: 7px 2px 0; color: var(--muted); font-size: 10px; line-height: 1.4; }
+#assistant .ai-message-source { display: inline-flex; width: fit-content; margin-bottom: 7px; padding: 3px 7px; border-radius: 4px; color: #315b6b; background: #eaf2f4; font-size: 10px; font-weight: 800; letter-spacing: .2px; }
+#assistant .ai-message-source.openai { color: #305c37; background: #e8f3e7; }
+#assistant .ai-message-source.fallback { color: #7a5b25; background: #f7efd9; }
+#assistant .ai-message-text { white-space: pre-wrap; }
+#assistant .assistant-chat > .muted { order: 7; margin: 7px 2px 0; color: var(--muted); font-size: 10px; line-height: 1.4; }
 
 .savings-card { margin: 0 0 16px; }
 .savings-card form { padding-bottom: 18px; border-bottom: 1px solid var(--line); }
@@ -696,6 +708,8 @@ footer .muted { font-size: 10px; }
   .facilities-layout { grid-template-columns: 1fr; }
   .insight-grid { grid-template-columns: 1fr; }
   #assistant .assistant-suggestions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #assistant .ai-process { grid-template-columns: 1fr; }
+  #assistant .ai-process i { display: none; }
 }
 
 @media (max-height: 760px) and (min-width: 781px) {
@@ -752,6 +766,7 @@ footer .muted { font-size: 10px; }
   #assistant .assistant-context { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   #assistant .assistant-suggestions { display: flex; overflow-x: auto; padding-bottom: 3px; }
   #assistant .assistant-suggestions .secondary { flex: 0 0 150px; }
+  #assistant .ai-process { display: none; }
   #assistant .assistant-chat > .card-heading { gap: 10px; }
   #assistant .ai-heading-actions { align-items: flex-end; flex-direction: column; }
   #assistant .ai-form > div { align-items: stretch; flex-direction: column; }

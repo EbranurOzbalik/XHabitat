@@ -36,14 +36,27 @@ function resetAiConversation(force=false){
   const facility=activeFacility(),changed=aiState.facilityId!==facility.id;
   if(!force&&!changed&&aiState.messages.length>1)return;
   aiState.facilityId=facility.id;
-  aiState.messages=[{role:'assistant',text:XHabitatAssistant.interpret('Sonuçlarımı genel olarak yorumla.',buildAssistantContext())}];
+  aiState.messages=[{role:'assistant',source:'local',text:XHabitatAssistant.interpret('Sonuçlarımı genel olarak yorumla.',buildAssistantContext())}];
   renderAiMessages();
+}
+
+function assistantSourceLabel(message){
+  if(message.loading)return 'Analiz hazırlanıyor';
+  if(message.source==='openai')return message.model?`Canlı AI · ${message.model}`:'Canlı AI yorumu';
+  if(message.source==='fallback')return 'Yerel yedek analiz';
+  return message.role==='assistant'?'Yerel karar motoru':'';
 }
 
 function renderAiMessages(){
   const panel=$('#ai-messages');
   panel.replaceChildren();
-  for(const message of aiState.messages){const item=document.createElement('div');item.className=`ai-message ${message.role}${message.loading?' loading':''}`;item.textContent=message.text;panel.append(item)}
+  for(const message of aiState.messages){
+    const item=document.createElement('div');item.className=`ai-message ${message.role}${message.loading?' loading':''}`;
+    if(message.role==='assistant'){
+      const source=document.createElement('span');source.className=`ai-message-source ${message.source||'local'}`;source.textContent=assistantSourceLabel(message);item.append(source);
+    }
+    const text=document.createElement('div');text.className='ai-message-text';text.textContent=message.text;item.append(text);panel.append(item);
+  }
   panel.scrollTop=panel.scrollHeight;
 }
 
@@ -57,10 +70,11 @@ function setAiAvailability(configured,model){
   aiState.configured=configured;
   aiState.mode=configured?'openai':'local';
   const status=$('#ai-status');
-  status.textContent=configured?`OpenAI bağlı · ${model}`:'Yerel analiz hazır';
+  status.textContent=configured?`Canlı AI bağlı · ${model}`:'Yerel karar motoru';
   status.className=`ai-status ${configured?'ready':'local'}`;
   setAiSendDisabled(false);
   $('.assistant-privacy').textContent=configured?'Sorun ve bu özet, yanıt oluşturmak için OpenAI API’ye gönderilir. API anahtarı tarayıcıya aktarılmaz.':'Yorumlar bu tarayıcıda, kural tabanlı olarak oluşturulur. Tesis verileri dışarı gönderilmez.';
+  $('#ai-mode-description').textContent=configured?'Hesaplama motoru sayıları üretir; canlı AI bu sonuçları tesis bağlamında yorumlar. Bağlantı kesilirse yerel analiz otomatik devreye girer.':'Hesaplama motoru sayıları üretir; yerel karar motoru sonuçları kurallarla yorumlar. OpenAI bağlantısı etkinleştirildiğinde aynı bağlam canlı AI tarafından açıklanır.';
   $('#ai-form-status').textContent='';
 }
 
@@ -74,19 +88,19 @@ async function askAssistant(question){
   const context=buildAssistantContext();
   if(!context.summary.recordCount){$('#ai-form-status').textContent='Önce seçili tesise en az bir üretim kaydı ekle.';return;}
   aiState.busy=true;setAiSendDisabled(true);$('#ai-form-status').textContent='';
-  aiState.messages.push({role:'user',text:question},{role:'assistant',text:'Verileri yorumluyorum…',loading:true});renderAiMessages();
+  aiState.messages.push({role:'user',text:question},{role:'assistant',source:aiState.mode,text:'Verileri yorumluyorum…',loading:true});renderAiMessages();
   try{
     if(aiState.mode==='openai'){
       const history=aiState.messages.slice(0,-2).filter(message=>!message.loading).slice(-6);
       const response=await fetch('/api/assistant',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question,context,history})});
       const data=await response.json();if(!response.ok)throw Error(data.error||'AI yanıtı alınamadı.');
-      aiState.messages[aiState.messages.length-1]={role:'assistant',text:data.answer};
+      aiState.messages[aiState.messages.length-1]={role:'assistant',source:'openai',model:data.model,text:data.answer};
     }else{
-      aiState.messages[aiState.messages.length-1]={role:'assistant',text:XHabitatAssistant.interpret(question,context)};
+      aiState.messages[aiState.messages.length-1]={role:'assistant',source:'local',text:XHabitatAssistant.interpret(question,context)};
     }
   }catch(error){
     const fallback=XHabitatAssistant.interpret(question,context);
-    aiState.messages[aiState.messages.length-1]={role:'assistant',text:aiState.mode==='openai'?`OpenAI yanıtı alınamadı; yerel yorum gösteriliyor.\n\n${fallback}`:`Yanıt oluşturulamadı: ${error.message}`};
+    aiState.messages[aiState.messages.length-1]={role:'assistant',source:'fallback',text:aiState.mode==='openai'?`Canlı AI yanıtı alınamadı. Kesintisiz devam etmek için yerel analiz gösteriliyor.\n\n${fallback}`:`Yanıt oluşturulamadı: ${error.message}`};
   }
   finally{aiState.busy=false;setAiSendDisabled(false);renderAiMessages();}
 }
