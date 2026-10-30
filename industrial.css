@@ -169,6 +169,7 @@ main,
 #assistant .assistant-layout {
   grid-template-columns: minmax(300px, .78fr) minmax(520px, 1.5fr);
   gap: 18px;
+  align-items: start;
 }
 
 #assistant .assistant-context-card,
@@ -252,15 +253,16 @@ main,
 }
 
 #assistant .assistant-chat {
-  height: clamp(500px, calc(100vh - 370px), 680px);
-  min-height: 500px;
-  max-height: 680px;
-  overflow: hidden;
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  overflow: visible;
   padding: 24px;
   background: #fff;
 }
 
 #assistant .assistant-chat > .card-heading {
+  order: 1;
   flex: 0 0 auto;
   margin-bottom: 12px;
   padding-bottom: 12px;
@@ -291,6 +293,7 @@ main,
 }
 
 #assistant .assistant-suggestions {
+  order: 2;
   flex: 0 0 auto;
   gap: 8px;
   margin-block: 8px 12px;
@@ -321,14 +324,16 @@ main,
 }
 
 #assistant .ai-messages {
-  flex: 1 1 auto;
+  order: 4;
+  flex: 0 0 auto;
   min-height: 0;
   max-height: none;
+  margin-top: 12px;
   padding: 16px;
   border-color: #d8e1e5;
   border-radius: 6px;
   background: #f4f6f7;
-  overscroll-behavior: contain;
+  overflow: visible;
 }
 
 #assistant .ai-message {
@@ -356,6 +361,7 @@ main,
 }
 
 #assistant .ai-form {
+  order: 3;
   flex: 0 0 auto;
   margin-top: 12px;
   padding: 11px 12px;
@@ -378,6 +384,7 @@ main,
 #assistant .ai-form > div { margin-top: 8px; }
 
 #assistant .assistant-chat > .muted {
+  order: 5;
   flex: 0 0 auto;
   margin-top: 8px;
   font-size: 10px;
@@ -549,7 +556,7 @@ th { color: #3f5661; }
 
   #assistant .assistant-context-card,
   #assistant .assistant-chat { padding: 20px; }
-  #assistant .assistant-chat { min-height: 500px; }
+  #assistant .assistant-chat { min-height: 0; }
 }
 
 @media (min-width: 781px) and (max-height: 820px) {
@@ -588,7 +595,7 @@ th { color: #3f5661; }
 
   #assistant .assistant-context-card,
   #assistant .assistant-chat { padding-block: 18px; }
-  #assistant .assistant-chat { min-height: 500px; }
+  #assistant .assistant-chat { min-height: 0; }
   #assistant .ai-messages {
     min-height: 0;
     max-height: none;
