@@ -132,7 +132,7 @@ Model testleri başlangıç senaryosunu, elektrik azaltımını, üretim değiş
 - Kayıtlar kullanılan tarayıcı ve site adresine özeldir; cihazlar arasında eşitlenmez.
 - Tarayıcı verilerinin silinmesi kayıtları kaldırır. Önemli kayıtlar için CSV yedeği al.
 - CSV çıktısı üretim verilerini, hesaplanan değerleri, katsayıları ve örnek/kullanıcı verisi ayrımını içerir.
-- Bu sürümde kullanıcı hesabı, sunucu veritabanı veya CSV içe aktarımı yoktur.
+- Bu sürümde kullanıcı hesabı veya sunucu veritabanı yoktur. CSV içe aktarımı Veri girişi ekranındadır.
 
 ## Birlikte geliştirme
 
@@ -175,3 +175,17 @@ python scripts/import-zenodo.py "Energy statistics for China cement plants.xlsx"
 **Sil** seçilen tarih için onay ister. Son kayıt silindiğinde boş durum gösterilir ve sayfa yenilendiğinde demo otomatik geri gelmez. Silme geri alınamaz; gerektiğinde önceden CSV yedeği alın.
 
 Kayıt yönetimi testleri: `node records.test.cjs`.
+
+## CSV içe aktarma
+
+**Veri girişi → CSV ile toplu kayıt ekle** bölümünden dosya seç. İlk 10 kayıt önizlenir; içe aktar düğmesine basmadan kayıtlar değişmez. Tek bir hatalı satır varsa dosyanın tamamı bekletilir ve satır numaralarıyla hata gösterilir.
+
+Gerekli sütunlar: `tarih`, `uretim_ton`, `elektrik_kwh`, `komur_ton`, `saat`. Başlık sırası değişebilir. Tarih `YYYY-AA-GG` veya `GG.AA.YYYY` biçimindedir. UTF-8, noktalı virgül/virgül/sekme ayırıcıları, tırnaklı alanlar ve nokta/virgül ondalıkları desteklenir. Binlik ayırıcı kullanılmaz: `65000` yazılır. Virgülle ayrılan dosyada ondalık virgüllü alan tırnak içine alınır. Sınır: 5 MB ve 10.000 kayıt.
+
+Varsayılan olarak aynı tarihli mevcut kayıt korunur. Güncelleme seçilirse üzerine yazılacak kayıt sayısıyla ek onay istenir. Dosyanın kendi içinde tekrarlanan tarihler hata sayılır. Tarayıcıya kayıt başarısızsa mevcut veriler değiştirilmez.
+
+Dışa aktarılan CSV yeniden yüklenebilir. Hesaplanmış alanlar ve CSV içindeki katsayılar içe alınmaz; hesaplar uygulamanın mevcut katsayılarıyla yeniden yapılır. Türkçe Excel için dışa aktarımda UTF-8 BOM, noktalı virgül ve ondalık virgül kullanılır.
+
+İndirilebilir şablondaki satırlar `veri_turu=demo` olarak işaretlidir. Kendi ölçümlerini eklerken bu sütunu `kullanici` yap veya kaldır. Örnek veriler mevcut kullanıcı kayıtlarına karıştırılmaz; şablon ile gerçek veriler aynı dosyada bulunamaz.
+
+Test: `node csv-model.test.cjs`.
