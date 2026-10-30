@@ -14,10 +14,11 @@ XHabitat, çimento üretiminde elektrik tüketimini ve enerji kaynaklı karbon s
 | Veri girişi | Tarih, üretim, elektrik, kömür ve çalışma süresi bilgilerini kaydet. |
 | Enerji & karbon | Karbon grafiğini incele ve emisyon katsayılarını değiştir. |
 | Tasarruf önerileri | Geçmiş kayıtlarla karşılaştırılan, kural tabanlı önerileri incele. |
+| Tesisler | Fabrika veya üretim hatlarını ayrı tanımla; aktif tesisin kayıtlarını, grafiklerini ve katsayılarını görüntüle. |
 | Fabrika demosu | Cemendus sensör simülasyonunu, örnek güç profilini ve eşik uyarılarını keşfet. |
 | Senaryo analizi | Elektrik, yakıt, klinker ve üretim değişikliklerinin varsayımsal etkilerini karşılaştır. |
 
-Ek olarak CSV dışa aktarımı, tarih bazlı kayıt güncelleme ve mobil ekranlara uyumlu bir arayüz sunar.
+Ek olarak seçili tesis için CSV içe/dışa aktarımı, tarih bazlı kayıt güncelleme ve mobil ekranlara uyumlu bir arayüz sunar.
 
 ## Hızlı başlangıç
 
@@ -38,13 +39,14 @@ Sunucu yalnızca yerel bilgisayardan erişilebilen `127.0.0.1` adresinde çalı�
 ## Kullanım
 
 1. İlk açılışta 7 günlük örnek üretim verilerini incele.
-2. **Günlük veri ekle** ile aynı güne ait üretim ve tüketim değerlerini gir.
-3. Özet panelinde ton başına elektrik tüketimini ve karbon tahminini görüntüle.
-4. **Enerji & karbon** ekranından uygun emisyon katsayılarını ayarla.
-5. Kayıtlarını **CSV indir** düğmesiyle dışa aktar.
-6. Günlük kayıtlarından bağımsız örnekler için **Fabrika demosu** ve **Senaryo analizi** ekranlarını kullan.
+2. **Tesisler** ekranından fabrika veya üretim hattı ekle; kenar çubuğundan çalışacağın tesisi seç.
+3. **Günlük veri ekle** ile aynı güne ve tesise ait üretim ve tüketim değerlerini gir.
+4. Özet panelinde ton başına elektrik tüketimini ve karbon tahminini görüntüle.
+5. **Enerji & karbon** ekranından seçili tesise uygun emisyon katsayılarını ayarla.
+6. Kayıtlarını **CSV indir** düğmesiyle dışa aktar.
+7. Günlük kayıtlarından bağımsız örnekler için **Fabrika demosu** ve **Senaryo analizi** ekranlarını kullan.
 
-İlk gerçek kaydın örnek kayıtların yerini alır. Aynı tarihle yeni kayıt girmek o günü günceller. **Demoyu yeniden yükle**, onayından sonra mevcut kayıtları örnek verilerle değiştirir ve katsayıları başlangıç değerlerine döndürür.
+İlk gerçek kaydın örnek kayıtların yerini alır. Aynı tesiste aynı tarihle yeni kayıt girmek o günü günceller. Her tesisin emisyon katsayıları ayrı saklanır. **Demoyu yeniden yükle**, onayından sonra tüm tesisleri ve kayıtları örnek senaryoyla değiştirir.
 
 ## Hesaplama yaklaşımı
 
@@ -130,8 +132,9 @@ Model testleri başlangıç senaryosunu, elektrik azaltımını, üretim değiş
 ## Veri saklama
 
 - Kayıtlar kullanılan tarayıcı ve site adresine özeldir; cihazlar arasında eşitlenmez.
+- Eski tek tesisli tarayıcı kayıtları ilk açılışta otomatik olarak **Ana Tesis** altında korunur.
 - Tarayıcı verilerinin silinmesi kayıtları kaldırır. Önemli kayıtlar için CSV yedeği al.
-- CSV çıktısı üretim verilerini, hesaplanan değerleri, katsayıları ve örnek/kullanıcı verisi ayrımını içerir.
+- CSV çıktısı seçili tesisin üretim verilerini, tesis/hat adını, hesaplanan değerlerini, katsayılarını ve örnek/kullanıcı verisi ayrımını içerir.
 - Bu sürümde kullanıcı hesabı veya sunucu veritabanı yoktur. CSV içe aktarımı Veri girişi ekranındadır.
 
 ## Birlikte geliştirme
@@ -178,13 +181,13 @@ Kayıt yönetimi testleri: `node records.test.cjs`.
 
 ## CSV içe aktarma
 
-**Veri girişi → CSV ile toplu kayıt ekle** bölümünden dosya seç. İlk 10 kayıt önizlenir; içe aktar düğmesine basmadan kayıtlar değişmez. Tek bir hatalı satır varsa dosyanın tamamı bekletilir ve satır numaralarıyla hata gösterilir.
+**Veri girişi → CSV ile toplu kayıt ekle** bölümünden dosya seç. Kayıtlar o anda aktif olan tesise eklenir. İlk 10 kayıt önizlenir; içe aktar düğmesine basmadan kayıtlar değişmez. Tek bir hatalı satır varsa dosyanın tamamı bekletilir ve satır numaralarıyla hata gösterilir.
 
 Gerekli sütunlar: `tarih`, `uretim_ton`, `elektrik_kwh`, `komur_ton`, `saat`. Başlık sırası değişebilir. Tarih `YYYY-AA-GG` veya `GG.AA.YYYY` biçimindedir. UTF-8, noktalı virgül/virgül/sekme ayırıcıları, tırnaklı alanlar ve nokta/virgül ondalıkları desteklenir. Binlik ayırıcı kullanılmaz: `65000` yazılır. Virgülle ayrılan dosyada ondalık virgüllü alan tırnak içine alınır. Sınır: 5 MB ve 10.000 kayıt.
 
 Varsayılan olarak aynı tarihli mevcut kayıt korunur. Güncelleme seçilirse üzerine yazılacak kayıt sayısıyla ek onay istenir. Dosyanın kendi içinde tekrarlanan tarihler hata sayılır. Tarayıcıya kayıt başarısızsa mevcut veriler değiştirilmez.
 
-Dışa aktarılan CSV yeniden yüklenebilir. Hesaplanmış alanlar ve CSV içindeki katsayılar içe alınmaz; hesaplar uygulamanın mevcut katsayılarıyla yeniden yapılır. Türkçe Excel için dışa aktarımda UTF-8 BOM, noktalı virgül ve ondalık virgül kullanılır.
+Dışa aktarılan CSV yeniden yüklenebilir. `tesis` ve `uretim_hatti` sütunları bilgi amaçlıdır; içe aktarım hedefini uygulamadaki aktif tesis belirler. Hesaplanmış alanlar ve CSV içindeki katsayılar içe alınmaz; hesaplar aktif tesisin katsayılarıyla yeniden yapılır. Türkçe Excel için dışa aktarımda UTF-8 BOM, noktalı virgül ve ondalık virgül kullanılır.
 
 İndirilebilir şablondaki satırlar `veri_turu=demo` olarak işaretlidir. Kendi ölçümlerini eklerken bu sütunu `kullanici` yap veya kaldır. Örnek veriler mevcut kullanıcı kayıtlarına karıştırılmaz; şablon ile gerçek veriler aynı dosyada bulunamaz.
 

@@ -47,16 +47,22 @@
     if(imported.errors.length||!imported.records.length)throw Error('Önce dosyadaki hataları düzelt.');
     if(!['skip','replace'].includes(mode))throw Error('Geçersiz çakışma seçimi.');
     if(imported.demo&&!current.demo&&current.records.length)throw Error('Örnek kayıtlar mevcut gerçek kayıtlarla birleştirilemez.');
-    const base=current.demo&&!imported.demo?[]:current.records;
-    const map=new Map(base.map(r=>[r.date,r]));let added=0,updated=0,skipped=0;
-    for(const r of imported.records){if(map.has(r.date)){if(mode==='skip'){skipped++;continue;}updated++;}else added++;map.set(r.date,{...r});}
-    return {state:{...current,demo:imported.demo,records:[...map.values()].sort((a,b)=>a.date.localeCompare(b.date))},added,updated,skipped};
+    const activeId=current.activeFacilityId||current.facilities?.[0]?.id||'plant-main';
+    const base=(current.demo&&!imported.demo?[]:current.records).map(r=>({...r,facilityId:r.facilityId||activeId}));
+    const map=new Map(base.map(r=>[`${r.facilityId}|${r.date}`,r]));let added=0,updated=0,skipped=0;
+    for(const r of imported.records){const key=`${activeId}|${r.date}`;if(map.has(key)){if(mode==='skip'){skipped++;continue;}updated++;}else added++;map.set(key,{...r,facilityId:activeId});}
+    return {state:{...current,demo:imported.demo,records:[...map.values()].sort((a,b)=>(a.facilityId||'').localeCompare(b.facilityId||'')||a.date.localeCompare(b.date))},added,updated,skipped};
   }
   function serialize(current){
-    const rows=[columns.concat(['kwh_ton','enerji_co2_ton','elektrik_kg_co2_kwh','komur_t_co2_t','veri_turu'])];
+    const activeId=current.activeFacilityId||current.facilities?.[0]?.id;
+    const facility=current.facilities?.find(item=>item.id===activeId);
+    const factors=facility?.factors||current.factors;
+    const records=activeId?current.records.filter(r=>(r.facilityId||activeId)===activeId):current.records;
+    const rows=[columns.concat(['tesis','uretim_hatti','kwh_ton','enerji_co2_ton','elektrik_kg_co2_kwh','komur_t_co2_t','veri_turu'])];
     const num=n=>String(n).replace('.',',');
-    for(const r of [...current.records].sort((a,b)=>a.date.localeCompare(b.date)))rows.push([r.date,...[r.production,r.electricity,r.coal,r.hours,Number((r.electricity/r.production).toFixed(3)),Number((r.electricity*current.factors.electricFactor/1000+r.coal*current.factors.coalFactor).toFixed(3)),current.factors.electricFactor,current.factors.coalFactor].map(num),current.demo?'demo':'kullanici']);
-    return '\uFEFF'+rows.map(row=>row.join(';')).join('\r\n');
+    const cell=value=>{const text=String(value??'');return /[;"\r\n]/.test(text)?`"${text.replace(/"/g,'""')}"`:text};
+    for(const r of [...records].sort((a,b)=>a.date.localeCompare(b.date)))rows.push([r.date,...[r.production,r.electricity,r.coal,r.hours].map(num),facility?.name||'Ana Tesis',facility?.line||'Genel üretim hattı',...[Number((r.electricity/r.production).toFixed(3)),Number((r.electricity*factors.electricFactor/1000+r.coal*factors.coalFactor).toFixed(3)),factors.electricFactor,factors.coalFactor].map(num),current.demo?'demo':'kullanici']);
+    return '\uFEFF'+rows.map(row=>row.map(cell).join(';')).join('\r\n');
   }
   const api={parse,merge,serialize};if(typeof module!=='undefined')module.exports=api;else root.XHabitatCSV=api;
 })(typeof window==='undefined'?globalThis:window);
