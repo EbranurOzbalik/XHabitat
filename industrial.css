@@ -11,6 +11,7 @@ body {
   color: var(--ink);
   background: var(--bg);
   font-weight: 500;
+  overflow-x: hidden;
 }
 
 html {
@@ -35,6 +36,20 @@ html::-webkit-scrollbar-thumb {
 }
 
 .sidebar::-webkit-scrollbar { display: none; }
+
+main,
+.content,
+.view,
+.metrics > *,
+.dashboard-grid > *,
+.form-layout > *,
+.insight-grid > *,
+.facilities-layout > *,
+.assistant-layout > * {
+  min-width: 0;
+}
+
+.content { width: 100%; }
 
 .sidebar .brand {
   gap: 8px;
@@ -237,14 +252,18 @@ html::-webkit-scrollbar-thumb {
 }
 
 #assistant .assistant-chat {
-  min-height: 650px;
+  height: clamp(500px, calc(100vh - 370px), 680px);
+  min-height: 500px;
+  max-height: 680px;
+  overflow: hidden;
   padding: 24px;
   background: #fff;
 }
 
 #assistant .assistant-chat > .card-heading {
-  margin-bottom: 18px;
-  padding-bottom: 17px;
+  flex: 0 0 auto;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
 }
 
 #assistant .assistant-chat > .card-heading h3 {
@@ -271,7 +290,11 @@ html::-webkit-scrollbar-thumb {
   background: #fff;
 }
 
-#assistant .assistant-suggestions { gap: 8px; }
+#assistant .assistant-suggestions {
+  flex: 0 0 auto;
+  gap: 8px;
+  margin-block: 8px 12px;
+}
 
 #assistant .assistant-suggestions .secondary {
   padding: 10px 13px;
@@ -298,20 +321,23 @@ html::-webkit-scrollbar-thumb {
 }
 
 #assistant .ai-messages {
-  min-height: 290px;
-  padding: 20px;
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
+  padding: 16px;
   border-color: #d8e1e5;
   border-radius: 6px;
   background: #f4f6f7;
+  overscroll-behavior: contain;
 }
 
 #assistant .ai-message {
-  padding: 15px 17px;
+  padding: 13px 15px;
   border-radius: 6px;
   box-shadow: none;
   font-size: 15px;
   font-weight: 500;
-  line-height: 1.7;
+  line-height: 1.6;
 }
 
 #assistant .ai-message.assistant {
@@ -330,16 +356,32 @@ html::-webkit-scrollbar-thumb {
 }
 
 #assistant .ai-form {
-  padding: 14px;
+  flex: 0 0 auto;
+  margin-top: 12px;
+  padding: 11px 12px;
   border-color: #d8e1e5;
   border-radius: 6px;
   box-shadow: none;
 }
 
 #assistant .ai-form textarea {
+  height: 58px;
+  min-height: 58px;
+  max-height: 58px;
+  resize: none;
+  padding-block: 10px;
   border: 1px solid #d8e1e5;
   border-radius: 5px;
   background: #f8f9fa;
+}
+
+#assistant .ai-form > div { margin-top: 8px; }
+
+#assistant .assistant-chat > .muted {
+  flex: 0 0 auto;
+  margin-top: 8px;
+  font-size: 10px;
+  line-height: 1.4;
 }
 
 #assistant #ai-send {
@@ -386,6 +428,20 @@ textarea,
 
 th { color: #3f5661; }
 .chart text { fill: #526872; font-weight: 600; }
+
+#facility-form .fields {
+  grid-template-columns: 1fr;
+  gap: 14px;
+  margin-block: 18px;
+}
+
+#scenario-form .fields {
+  gap: 14px 18px;
+  margin-block: 18px;
+}
+
+#scenario-form label { gap: 6px; }
+#scenario-form input { padding-block: 11px; }
 
 @media (max-width: 1100px) {
   .hero::after { display: none; }
@@ -460,6 +516,96 @@ th { color: #3f5661; }
     justify-content: center;
     padding-inline: 8px;
   }
+}
+
+@media (min-width: 1180px) and (max-width: 1399px) {
+  header { padding-inline: 24px; }
+  .content {
+    max-width: none;
+    padding-inline: 24px;
+  }
+
+  .page-heading h1 { font-size: 32px; }
+  .primary { padding: 12px 16px; font-size: 14px; }
+
+  .hero {
+    min-height: 218px;
+    padding: 24px 30px;
+  }
+
+  .hero h2 { font-size: 34px; }
+  .hero::after { top: 39px; right: 30px; }
+
+  .metrics { gap: 12px; }
+  .metric { padding: 16px; }
+  .metric-value { font-size: 29px; }
+  .dashboard-grid { gap: 16px; }
+  .card { padding: 20px; }
+
+  #assistant .assistant-layout {
+    grid-template-columns: minmax(285px, .72fr) minmax(0, 1.28fr);
+    gap: 16px;
+  }
+
+  #assistant .assistant-context-card,
+  #assistant .assistant-chat { padding: 20px; }
+  #assistant .assistant-chat { min-height: 500px; }
+}
+
+@media (min-width: 781px) and (max-height: 820px) {
+  header { height: 56px; }
+  .content { padding-top: 18px; }
+
+  .page-heading { margin-bottom: 14px; }
+  .page-heading h1 {
+    margin-block: 6px;
+    font-size: 31px;
+  }
+  .page-heading p { font-size: 14px; }
+
+  .notice {
+    margin-bottom: 14px;
+    padding-block: 9px;
+  }
+
+  .hero {
+    min-height: 202px;
+    padding-block: 21px;
+  }
+  .hero h2 {
+    margin: 13px 0 8px;
+    font-size: 33px;
+  }
+  .hero p { margin-block: 0 12px; }
+  .hero::after { top: 34px; }
+
+  .section-title { margin: 17px 0 11px; }
+  .metrics { margin-bottom: 14px; }
+  .metric { padding-block: 14px; }
+  .metric-value { margin: 11px 0 8px; }
+
+  .card { padding-block: 18px; }
+
+  #assistant .assistant-context-card,
+  #assistant .assistant-chat { padding-block: 18px; }
+  #assistant .assistant-chat { min-height: 500px; }
+  #assistant .ai-messages {
+    min-height: 0;
+    max-height: none;
+  }
+
+  #scenario-form .fields {
+    gap: 10px 16px;
+    margin-block: 14px;
+  }
+
+  #scenario-form label {
+    gap: 5px;
+    font-size: 14px;
+    line-height: 1.25;
+  }
+
+  #scenario-form input { padding-block: 9px; }
 }
 
 @media (min-width: 781px) and (max-width: 1100px) {
