@@ -20,6 +20,8 @@ XHabitat, çimento üretiminde elektrik tüketimini ve enerji kaynaklı karbon s
 
 Ek olarak seçili tesis için CSV içe/dışa aktarımı, tarih bazlı kayıt güncelleme ve mobil ekranlara uyumlu bir arayüz sunar.
 
+Enerji & karbon ekranındaki karşılaştırma göstergesi, seçili tesisin kayıtlarından üretim ağırlıklı elektrik yoğunluğunu hesaplar ve bunu Zenodo CCID verisindeki sayısal çimento kayıtlarının medyanıyla yan yana gösterir. Kaynak Çin’deki farklı bölgeler, belge yılları ve üretim koşulları içerdiği için medyan değer hedef veya performans standardı olarak kullanılmaz.
+
 ## Hızlı başlangıç
 
 **Gereksinimler:** Node.js ve modern bir tarayıcı. Depoyu klonlamak için Git gerekir. Geliştirme sırasında Node.js 24 ile doğrulanmıştır.
