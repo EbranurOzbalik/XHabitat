@@ -149,3 +149,21 @@ git push -u origin feat/ozellik-adi
 ---
 
 Yeşil Gelecek Hackathonu · XHabitat
+
+## Zenodo açık veri ekranı
+
+[WU Tongyuan, China Cement Industry Dataset (CCID), v1.1](https://doi.org/10.5281/zenodo.8083481), 26 Haziran 2023, CC BY 4.0.
+
+`Energy statistics for China cement plants.xlsx` dosyasının `data` sayfasındaki 1.460 kaynak satırı yerel `data/zenodo.json` dosyasından gösterilir. 1.376 kayıtta sayısal çimento elektrik değeri bulunur. Belge yılları 2010–2020 arasındadır; 13 kaydın yılı eksiktir. Satır sayısı tekil tesis sayısı değildir.
+
+Yıl, bölge, üretim türü ve tesis adı filtreleri ile 15 satırlık sayfalama bulunur. Kaynak değerler değiştirilmez, eksikler sıfır yapılmaz ve günlük kayıtlara aktarılmaz. Birim yorumu aynı yazarın [CCID enerji referans dosyasındaki](https://zenodo.org/records/6321438) `cement_(kWh/t_cement)` ve `clinker_(kWh/t_clinker)` başlıklarıyla desteklenmiştir; ana dosya başlıkları birimi açıkça yazmaz. Farklı süreçler ve belge yılları doğrudan bir verimlilik sıralaması sayılmamalıdır.
+
+Dönüşümde seçili sütunlar alınmış, özgün tesis adları ve Excel satır numaraları korunmuştur. Bu veriyle günlük üretim, kömür veya toplam CO₂ uydurulmaz. Kaynak lisansı Zenodo API metadata kaydında `cc-by-4.0` olarak belirtilmiştir.
+
+Veriyi yeniden oluşturmak için Python ve `openpyxl` ile:
+
+```bash
+python scripts/import-zenodo.py "Energy statistics for China cement plants.xlsx"
+```
+
+İçe aktarıcı kaynak MD5 değerini `aa3d3d467aabb2953e6bfede5f615491` ile doğrular. Uygulamanın normal çalışması için Python veya Excel dosyası gerekmez. Yerel JSON sayesinde sunumda Zenodo bağlantısına bağımlılık yoktur.
