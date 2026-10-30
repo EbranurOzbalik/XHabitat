@@ -22,6 +22,9 @@ async function withServer(options,run){
     const localModel=await fetch(base+'/assistant-model.js');
     assert.equal(localModel.status,200);
     assert.match(await localModel.text(),/function interpret/);
+    const industrialTheme=await fetch(base+'/industrial.css');
+    assert.equal(industrialTheme.status,200);
+    assert.match(await industrialTheme.text(),/Restrained industrial interface/);
     const response=await fetch(base+'/api/assistant',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:'Yorumla'})});
     assert.equal(response.status,503);
   });

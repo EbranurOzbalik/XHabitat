@@ -1,0 +1,318 @@
+/* Restrained industrial interface */
+:root {
+  --ink: #21343f;
+  --green: #19637d;
+  --muted: #667984;
+  --line: #d8e0e4;
+  --bg: #f3f5f6;
+}
+
+body { background: var(--bg); }
+
+.sidebar {
+  border-right: 1px solid var(--line);
+  background: #fff;
+  box-shadow: none;
+}
+
+.sidebar .brand {
+  gap: 8px;
+  color: #183342;
+  font-size: 26px;
+  letter-spacing: -.9px;
+}
+
+.sidebar .brand .logo {
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 0;
+  color: #19637d;
+  background: transparent;
+  box-shadow: none;
+  font-size: 32px;
+}
+
+.sidebar .brand-dot { color: #7e9c45; }
+
+.sidebar .workspace {
+  padding: 15px;
+  border: 1px solid #cfd9de;
+  border-radius: 8px;
+  color: var(--ink);
+  background: #f7f9fa;
+  box-shadow: none;
+}
+
+.sidebar .workspace::after { display: none; }
+
+.sidebar .factory {
+  width: 34px;
+  height: 34px;
+  flex-basis: 34px;
+  border: 1px solid #c8d8df;
+  border-radius: 5px;
+  color: #19637d;
+  background: #e7eff2;
+  font-size: 18px;
+}
+
+.sidebar .workspace-copy > strong { color: #203844; font-size: 14px; }
+.sidebar .workspace-copy > small { color: #71828c; }
+.sidebar .facility-switch-label { color: #536b78; }
+
+.sidebar .facility-switch-label select {
+  border-color: #c7d2d8;
+  border-radius: 5px;
+  color: #213943;
+  background: #fff;
+  box-shadow: none;
+}
+
+.sidebar .workspace-manage { color: #19637d; }
+.sidebar .workspace-manage:hover { color: #123f52; }
+
+.sidebar nav button { border-radius: 5px; }
+.sidebar nav button.active {
+  color: #174d63;
+  background: #e9eff2;
+  box-shadow: inset 3px 0 #19637d;
+}
+
+.card,
+.metric {
+  border-color: var(--line);
+  border-radius: 8px;
+  box-shadow: none;
+}
+
+.primary { border-radius: 5px; background: #19637d; }
+.secondary { border-radius: 5px; }
+.notice, .note { border-radius: 5px; }
+
+.hero {
+  justify-content: flex-start;
+  border: 1px solid #173a49;
+  border-radius: 8px;
+  background: #193f52;
+}
+
+.hero > div:first-child { max-width: 620px; }
+.hero em { color: #d3e3e9; }
+.hero p { color: #c5d2d7; }
+.hero button { color: #e3ecef; }
+.orbit-art { display: none; }
+
+.hero::after {
+  content: "01  ÜRETİM TAKİBİ\A 02  ENERJİ YOĞUNLUĞU\A 03  KARBON HESABI";
+  position: absolute;
+  top: 58px;
+  right: 52px;
+  padding: 6px 0 6px 27px;
+  border-left: 1px solid rgba(255,255,255,.24);
+  color: #aebfc7;
+  font: 600 11px/2.3 'DM Sans', sans-serif;
+  letter-spacing: 1.3px;
+  white-space: pre;
+}
+
+.source-banner { border-radius: 8px; background: #193f52; }
+
+#assistant::before { display: none; }
+
+#assistant .assistant-layout {
+  grid-template-columns: minmax(300px, .78fr) minmax(520px, 1.5fr);
+  gap: 18px;
+}
+
+#assistant .assistant-context-card,
+#assistant .assistant-chat {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: none;
+}
+
+#assistant .assistant-context-card {
+  padding: 24px;
+  color: var(--ink);
+  background: #fff;
+}
+
+#assistant .assistant-context-card::after { display: none; }
+
+#assistant .assistant-context-card .icon-tile {
+  width: 36px;
+  height: 36px;
+  margin-bottom: 18px;
+  border: 1px solid #cbd8dd;
+  border-radius: 5px;
+  color: #315b6e;
+  background: #e9f0f2;
+  box-shadow: none;
+  font-size: 16px;
+}
+
+#assistant .assistant-context-card h3 {
+  color: #203844;
+  font-size: 21px;
+  letter-spacing: -.2px;
+}
+
+#assistant .assistant-context-card > p {
+  color: #697b84;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+#assistant .assistant-context { gap: 8px; }
+
+#assistant .assistant-context > div {
+  min-height: 78px;
+  padding: 13px;
+  border: 1px solid #dbe3e7;
+  border-radius: 5px;
+  background: #f6f8f9;
+  backdrop-filter: none;
+}
+
+#assistant .assistant-context > div span {
+  color: #70818a;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+#assistant .assistant-context > div strong,
+#assistant .assistant-context > div:nth-child(3) strong,
+#assistant .assistant-context > div:nth-child(6) strong {
+  color: #213b47;
+  font-size: 15px;
+}
+
+#assistant .assistant-context > div:nth-child(3),
+#assistant .assistant-context > div:nth-child(6) {
+  border-left: 3px solid #769b43;
+}
+
+#assistant .assistant-privacy {
+  margin-top: 18px;
+  padding: 13px;
+  border: 1px solid #dbe3e7;
+  color: #5f737e;
+  background: #f4f7f8;
+}
+
+#assistant .assistant-chat {
+  min-height: 650px;
+  padding: 24px;
+  background: #fff;
+}
+
+#assistant .assistant-chat > .card-heading {
+  margin-bottom: 18px;
+  padding-bottom: 17px;
+}
+
+#assistant .assistant-chat > .card-heading h3 {
+  color: #203844;
+  font-size: 23px;
+  letter-spacing: -.3px;
+}
+
+#assistant .ai-status {
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+#assistant .ai-status::before { box-shadow: none; }
+
+#assistant .ai-status.local {
+  border-color: #cbdce2;
+  color: #315f71;
+  background: #edf3f5;
+}
+
+#assistant .ai-clear {
+  border-radius: 4px;
+  background: #fff;
+}
+
+#assistant .assistant-suggestions { gap: 8px; }
+
+#assistant .assistant-suggestions .secondary {
+  padding: 10px 13px;
+  border-radius: 5px;
+  color: #435e6b;
+  background: #fff;
+  box-shadow: none;
+  font-weight: 600;
+}
+
+#assistant .assistant-suggestions .secondary::before { display: none; }
+
+#assistant .assistant-suggestions .secondary:hover {
+  border-color: #9fb2bb;
+  background: #f5f7f8;
+}
+
+#assistant .assistant-suggestions .optimization-suggestion,
+#assistant .assistant-suggestions .optimization-suggestion:hover {
+  border-color: #174f65;
+  color: #fff;
+  background: #174f65;
+}
+
+#assistant .ai-messages {
+  min-height: 290px;
+  padding: 20px;
+  border-color: #d8e1e5;
+  border-radius: 6px;
+  background: #f4f6f7;
+}
+
+#assistant .ai-message {
+  padding: 15px 17px;
+  border-radius: 6px;
+  box-shadow: none;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+#assistant .ai-message.assistant {
+  margin-left: 0;
+  border: 1px solid #d8e1e5;
+  border-radius: 6px;
+  color: #334d59;
+  background: #fff;
+}
+
+#assistant .ai-message.assistant::before { display: none; }
+
+#assistant .ai-message.user {
+  border-radius: 6px;
+  background: #315d70;
+}
+
+#assistant .ai-form {
+  padding: 14px;
+  border-color: #d8e1e5;
+  border-radius: 6px;
+  box-shadow: none;
+}
+
+#assistant .ai-form textarea {
+  border: 1px solid #d8e1e5;
+  border-radius: 5px;
+  background: #f8f9fa;
+}
+
+#assistant #ai-send {
+  border-radius: 5px;
+  background: #19637d;
+  box-shadow: none;
+}
+
+@media (max-width: 1100px) {
+  .hero::after { display: none; }
+  #assistant .assistant-layout { grid-template-columns: 1fr; }
+}
