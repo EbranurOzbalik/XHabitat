@@ -23,11 +23,10 @@ async function withServer(options,run){
     assert.equal(localModel.status,200);
     assert.match(await localModel.text(),/function interpret/);
     const interfaceHtml=await fetch(base+'/').then(response=>response.text());
-    assert.match(interfaceHtml,/assistant-shell/);
-    assert.match(interfaceHtml,/Yanıt nasıl oluşuyor/);
-    assert.match(interfaceHtml,/Hesaplama/);
-    assert.match(interfaceHtml,/Bağlam/);
-    assert.match(interfaceHtml,/Yorum/);
+    assert.match(interfaceHtml,/assistant-workspace/);
+    assert.match(interfaceHtml,/Ne öğrenmek istiyorsun/);
+    assert.match(interfaceHtml,/Hesap önce, yorum sonra/);
+    assert.match(interfaceHtml,/Tesis değerlendirmesi/);
     const industrialTheme=await fetch(base+'/industrial.css');
     assert.equal(industrialTheme.status,200);
     assert.match(await industrialTheme.text(),/Restrained industrial interface/);
