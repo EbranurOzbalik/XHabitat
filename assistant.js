@@ -44,7 +44,7 @@ function assistantSourceLabel(message){
   if(message.loading)return 'Analiz hazırlanıyor';
   if(message.source==='openai')return message.model?`Canlı AI · ${message.model}`:'Canlı AI yorumu';
   if(message.source==='fallback')return 'Yerel yedek analiz';
-  return message.role==='assistant'?'Yerel karar motoru':'';
+  return message.role==='assistant'?'XHabitat analizi':'';
 }
 
 function renderAiMessages(){
@@ -70,11 +70,12 @@ function setAiAvailability(configured,model){
   aiState.configured=configured;
   aiState.mode=configured?'openai':'local';
   const status=$('#ai-status');
-  status.textContent=configured?`Canlı AI bağlı · ${model}`:'Yerel karar motoru';
+  status.textContent=configured?`Canlı AI bağlı · ${model}`:'XHabitat analizi';
+  status.hidden=!configured;
   status.className=`ai-status ${configured?'ready':'local'}`;
   setAiSendDisabled(false);
   $('.assistant-privacy').textContent=configured?'Sorun ve bu özet, yanıt oluşturmak için OpenAI API’ye gönderilir. API anahtarı tarayıcıya aktarılmaz.':'Yorumlar bu tarayıcıda, kural tabanlı olarak oluşturulur. Tesis verileri dışarı gönderilmez.';
-  $('#ai-mode-description').textContent=configured?'Hesaplama motoru sayıları üretir; canlı AI bu sonuçları tesis bağlamında yorumlar. Bağlantı kesilirse yerel analiz otomatik devreye girer.':'Hesaplama motoru sayıları üretir; yerel karar motoru sonuçları kurallarla yorumlar. OpenAI bağlantısı etkinleştirildiğinde aynı bağlam canlı AI tarafından açıklanır.';
+  $('#ai-mode-description').textContent=configured?'Hesaplama motoru sayıları üretir; canlı AI bu sonuçları tesis bağlamında yorumlar. Bağlantı kesilirse kural tabanlı analiz otomatik devreye girer.':'Hesaplama motoru sayıları üretir; XHabitat sonuçları doğrulanmış kurallarla yorumlar. OpenAI bağlantısı etkinleştirildiğinde aynı bağlam canlı AI tarafından açıklanır.';
   $('#ai-form-status').textContent='';
 }
 

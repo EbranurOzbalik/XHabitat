@@ -42,7 +42,7 @@ XHabitat hibrit bir karar destek akışı kullanır:
 2. **Tesis bağlamı** son yedi kayıt, tesis hedefi ve Zenodo referansını tek bir sınırlı veri özeti hâline getirir.
 3. **Yorum motoru** bu doğrulanabilir sonuçları açıklar ve kontrol edilecek noktaları önceliklendirir.
 
-AI asistan varsayılan olarak API anahtarı gerektirmez. Seçili tesisin yoğunluğunu, eğilimini, hedef farkını, teorik tasarrufunu, enerji kaynaklı karbonunu ve Zenodo karşılaştırmasını yerel karar motoruyla tarayıcı içinde yorumlar. Bu modda tesis verileri dışarı gönderilmez. Arayüz, her yanıtın **Yerel karar motoru**, **Canlı AI** veya bağlantı sorunu sonrası **Yerel yedek analiz** tarafından oluşturulduğunu gösterir.
+AI asistan varsayılan olarak API anahtarı gerektirmez. Seçili tesisin yoğunluğunu, eğilimini, hedef farkını, teorik tasarrufunu, enerji kaynaklı karbonunu ve Zenodo karşılaştırmasını doğrulanmış kurallarla tarayıcı içinde yorumlar. Bu modda tesis verileri dışarı gönderilmez. Arayüz, her yanıtın **XHabitat analizi**, **Canlı AI** veya bağlantı sorunu sonrası **Yerel yedek analiz** tarafından oluşturulduğunu gösterir.
 
 **Optimizasyon planı** seçeneği hedef açığını ve kayıtlı dönem fırsatını sayısallaştırır, son yedi kayıttaki en iyi ve en yüksek tüketimli günleri iç kıyas olarak gösterir ve aksiyonları önceliklendirir. Ürün tipi, klinker oranı, vardiya, değirmen çalışma/duruş süresi, ton/saat ve kalite gibi veriler mevcut değilse asistan bunları eksik veri olarak belirtir. Öneriler otomatik proses ayarı değildir; tek değişkenli kontrollü denemeler için karar desteğidir.
 
