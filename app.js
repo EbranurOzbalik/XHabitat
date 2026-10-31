@@ -76,12 +76,13 @@ const views = {
   entry: ['Veri girişi', 'Her iyi adım, veriyle başlar.', 'Üretim gününü doğru tesis ve üretim hattına kaydet.'],
   analysis: ['Enerji & karbon', 'Verinin arkasındaki etki.', 'Enerji kaynaklı emisyonları şeffaf hesaplarla keşfet.'],
   insights: ['Tasarruf önerileri', 'Veriden daha iyi kararlara.', 'Seçili tesisin kayıtlarından çıkan uygulanabilir adımlar.'],
-  assistant: ['AI asistan', 'Çıktılarını birlikte yorumlayalım.', 'Seçili tesisin sonuçlarını sor, karşılaştır ve anlaşılır aksiyonlara dönüştür.'],
+  assistant: ['Karar desteği', 'Önce neyi iyileştirmeliyiz?', 'Tesis performansındaki hedef farkını, öncelikli bulguları ve kontrol sırasını incele.'],
   facilities: ['Tesisler', 'Tesislerini ayrı ayrı izle.', 'Fabrikaları ve üretim hatlarını tek çalışma alanından yönet.']
 };
 
 function show(view) {
   if (!views[view]) view = 'overview';
+  if (document.body) document.body.dataset.view = view;
   document.querySelectorAll('.view').forEach(element => element.hidden = element.id !== view);
   document.querySelectorAll('nav button').forEach(element => element.classList.toggle('active', element.dataset.view === view));
   $('#crumb').textContent = views[view][0];

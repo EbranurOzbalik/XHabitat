@@ -30,6 +30,16 @@ function renderAssistantContext(){
   $('#assistant-context').className='assistant-context';
   $('#assistant-context').replaceChildren();
   for(const [label,value] of items){const row=document.createElement('div'),name=document.createElement('span'),result=document.createElement('strong');name.textContent=label;result.textContent=value;row.append(name,result);$('#assistant-context').append(row)}
+  const priority=$('#assistant-priority');
+  if(priority){
+    const gap=summary.weightedIntensityKwhTon===null?null:summary.weightedIntensityKwhTon-goal.targetIntensityKwhTon;
+    const label=document.createElement('span'),title=document.createElement('strong'),detail=document.createElement('p');
+    label.textContent='BUGÜNKÜ ÖNCELİK';
+    if(gap===null){title.textContent='Analiz için veri gerekli';detail.textContent='İlk üretim kaydını eklediğinde hedef farkı ve kontrol sırası burada görünür.'}
+    else if(gap>0){title.textContent=`${fmt(gap,1)} kWh/ton hedef farkı`;detail.textContent=`Ortalama yoğunluk hedefin %${fmt(gap/goal.targetIntensityKwhTon*100,1)} üzerinde. Önce çalışma süresi ve boşta tüketim koşullarını doğrula.`}
+    else{title.textContent='Hedef aralığında';detail.textContent='Ortalama elektrik yoğunluğu tesis hedefinin altında. İyi giden çalışma koşullarını kayıtlarla izlemeye devam et.'}
+    priority.replaceChildren(label,title,detail);
+  }
 }
 
 function resetAiConversation(force=false){
@@ -44,7 +54,7 @@ function assistantSourceLabel(message){
   if(message.loading)return 'Analiz hazırlanıyor';
   if(message.source==='openai')return message.model?`Canlı AI · ${message.model}`:'Canlı AI yorumu';
   if(message.source==='fallback')return 'Yerel yedek analiz';
-  return message.role==='assistant'?'XHabitat analizi':'';
+  return '';
 }
 
 function renderAiMessages(){
@@ -53,7 +63,8 @@ function renderAiMessages(){
   for(const message of aiState.messages){
     const item=document.createElement('div');item.className=`ai-message ${message.role}${message.loading?' loading':''}`;
     if(message.role==='assistant'){
-      const source=document.createElement('span');source.className=`ai-message-source ${message.source||'local'}`;source.textContent=assistantSourceLabel(message);item.append(source);
+      const sourceLabel=assistantSourceLabel(message);
+      if(sourceLabel){const source=document.createElement('span');source.className=`ai-message-source ${message.source||'local'}`;source.textContent=sourceLabel;item.append(source)}
     }
     const text=document.createElement('div');text.className='ai-message-text';text.textContent=message.text;item.append(text);panel.append(item);
   }

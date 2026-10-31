@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const root = __dirname;
-const files = {'/':'index.html','/index.html':'index.html','/style.css':'style.css','/assistant.css':'assistant.css','/industrial.css':'industrial.css','/app.js':'app.js','/cemendus.js':'cemendus.js','/cemendus-model.js':'cemendus-model.js','/zenodo.js':'zenodo.js','/csv-model.js':'csv-model.js','/csv.js':'csv.js','/assistant-model.js':'assistant-model.js','/assistant.js':'assistant.js','/data/zenodo.json':'data/zenodo.json'};
+const files = {'/':'index.html','/index.html':'index.html','/style.css':'style.css','/assistant.css':'assistant.css','/industrial.css':'industrial.css','/operations.css':'operations.css','/app.js':'app.js','/cemendus.js':'cemendus.js','/cemendus-model.js':'cemendus-model.js','/zenodo.js':'zenodo.js','/csv-model.js':'csv-model.js','/csv.js':'csv.js','/assistant-model.js':'assistant-model.js','/assistant.js':'assistant.js','/data/zenodo.json':'data/zenodo.json'};
 const instructions = `Sen XHabitat AI Asistanısın. Çimento tesislerinin enerji ve enerji kaynaklı karbon çıktılarını Türkçe, sade ve kısa biçimde yorumlarsın.
 Yalnızca gönderilen tesis verilerini kullan. Veri olmayan nedenleri, arızaları veya tasarruf miktarlarını uydurma. Bir değişimin olası nedenlerini söylerken bunun doğrulanması gereken bir olasılık olduğunu belirt.
 Elektrik yoğunluğunda düşük değer daha az elektrik/ton anlamına gelir. Karbon hesabının yalnızca elektrik ve kömür kaynaklı tahmin olduğunu, toplam çimento karbon ayak izi olmadığını gerektiğinde hatırlat.
