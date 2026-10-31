@@ -117,7 +117,12 @@ function chart(target, calculator, unit) {
     $(target).innerHTML = '<p class="note">Seçili tesis için grafik oluşturacak kayıt yok.</p>';
     return;
   }
-  const values = rows.map(calculator), max = Math.max(...values, 1) * 1.2, width = 580, height = 190, left = 44, bottom = 160, top = 20;
+  const values = rows.map(calculator);
+  if (rows.length === 1) {
+    $(target).innerHTML = `<div class="single-reading" role="img" aria-label="${dateText(rows[0].date)}: ${fmt(values[0], 1)} ${unit}"><span>TEK KAYIT</span><strong>${fmt(values[0], 1)} <small>${unit}</small></strong><p>${dateText(rows[0].date)} · Eğilimi görmek için en az bir üretim günü daha ekle.</p></div>`;
+    return;
+  }
+  const max = Math.max(...values, 1) * 1.2, width = 580, height = 190, left = 44, bottom = 160, top = 20;
   const x = index => left + (index + .5) * (width - left - 12) / rows.length;
   const y = value => bottom - value / max * (bottom - top);
   const points = values.map((value, index) => `${x(index)},${y(value)}`).join(' ');

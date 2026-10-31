@@ -15,6 +15,7 @@
   --sidebar-width: 300px;
   --radius: 10px;
   --shadow: 0 1px 2px rgba(15, 45, 58, .04);
+  --font-sans: "Segoe UI Variable Text", "Segoe UI", Arial, sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -37,7 +38,7 @@ body {
   overflow-x: hidden;
   color: var(--ink);
   background: var(--canvas);
-  font: 500 16px/1.55 Inter, "Segoe UI", Arial, sans-serif;
+  font: 500 16px/1.55 var(--font-sans);
 }
 
 button,
@@ -63,7 +64,7 @@ h1, h2, h3, p { overflow-wrap: anywhere; }
 h1, h2, h3 {
   margin-top: 0;
   color: var(--ink);
-  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  font-family: var(--font-sans);
 }
 p { color: var(--ink-soft); }
 
@@ -91,7 +92,7 @@ p { color: var(--ink-soft); }
   align-items: center;
   gap: 8px;
   color: #173543;
-  font: 800 27px/1 Inter, "Segoe UI", Arial, sans-serif;
+  font: 800 27px/1 var(--font-sans);
   letter-spacing: -.8px;
   text-decoration: none;
 }
@@ -156,7 +157,7 @@ p { color: var(--ink-soft); }
 .sidebar .workspace-copy > strong {
   overflow: hidden;
   color: var(--ink);
-  font: 750 15px/1.3 Inter, "Segoe UI", Arial, sans-serif;
+  font: 750 15px/1.3 var(--font-sans);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -390,57 +391,46 @@ header {
 .hero {
   position: relative;
   display: flex;
-  min-height: 220px;
+  min-height: 122px;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
+  gap: 28px;
   overflow: hidden;
-  padding: 27px 34px;
+  padding: 22px 26px;
   border: 1px solid #173f4f;
-  border-radius: 12px;
+  border-radius: 10px;
   color: #fff;
-  background: #173f50;
+  background: linear-gradient(100deg, #173f50, #1b4a5c);
 }
 
-.hero > div:first-child { max-width: 610px; }
-.pill { color: #bfd0a3; font-size: 11px; font-weight: 800; letter-spacing: 1.35px; }
+.hero > div:first-child { max-width: 760px; }
+.pill { color: #c4d8a2; font-size: 11px; font-weight: 800; letter-spacing: 1.3px; }
 .hero h2 {
-  margin: 14px 0 8px;
+  margin: 6px 0 4px;
   color: #fff;
-  font-size: clamp(32px, 2.6vw, 40px);
-  font-weight: 600;
-  line-height: 1.18;
-  letter-spacing: -1px;
+  font-size: clamp(24px, 2vw, 30px);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -.6px;
 }
 
 .hero em { color: #dbe8ec; font-style: normal; }
-.hero p { margin: 0 0 13px; color: #d9e4e8; font-size: 15px; font-weight: 500; }
-.hero button { border: 0; padding: 0; color: #fff; background: transparent; font-size: 14px; font-weight: 750; }
+.hero p { margin: 0; color: #d5e2e6; font-size: 14px; font-weight: 550; }
+.hero button { min-height: 42px; flex: 0 0 auto; padding: 10px 14px; border: 1px solid rgba(255,255,255,.34); border-radius: 7px; color: #fff; background: rgba(255,255,255,.07); font-size: 13px; font-weight: 750; }
 .orbit-art { display: none; }
 
-.hero::after {
-  content: "01  ÜRETİM TAKİBİ\A 02  ENERJİ YOĞUNLUĞU\A 03  KARBON HESABI";
-  position: absolute;
-  top: 50%;
-  right: 34px;
-  padding: 4px 0 4px 26px;
-  border-left: 1px solid rgba(255,255,255,.25);
-  color: #cbd9de;
-  font: 750 10px/2.25 Inter, "Segoe UI", Arial, sans-serif;
-  letter-spacing: 1.15px;
-  white-space: pre;
-  transform: translateY(-50%);
-}
+.hero::after { display: none; }
 
 .section-title {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  margin: 18px 0 10px;
+  margin: 14px 0 9px;
 }
 
 .section-title h2 { margin: 0; font-size: 19px; }
-.section-title h2 span { margin-left: 8px; color: var(--muted); font: 550 14px Inter, "Segoe UI", Arial, sans-serif; }
+.section-title h2 span { margin-left: 8px; color: var(--muted); font: 550 14px var(--font-sans); }
 .muted { color: var(--muted); font-size: 14px; font-weight: 550; }
 
 .metrics {
@@ -458,7 +448,7 @@ header {
   box-shadow: var(--shadow);
 }
 
-.metric { min-height: 132px; padding: 16px; }
+.metric { min-height: 122px; padding: 15px 16px; }
 .metric-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: #4c626c; font-size: 15px; font-weight: 650; }
 .metric-icon { color: #6e8b4c; font-size: 18px; }
 .metric-value { margin: 12px 0 7px; color: var(--ink); font-size: clamp(28px, 2.1vw, 34px); font-weight: 800; line-height: 1.1; letter-spacing: -.8px; }
@@ -480,7 +470,12 @@ header {
 .card-heading p { margin: 0; font-size: 14px; }
 .tag { flex: 0 0 auto; padding: 6px 9px; border: 1px solid var(--line); border-radius: 6px; color: var(--muted); font-size: 12px; font-weight: 700; }
 .chart { display: block; width: 100%; height: 205px; }
-.chart text { fill: #61747d; font: 600 10px Inter, "Segoe UI", Arial, sans-serif; }
+.chart text { fill: #61747d; font: 600 10px var(--font-sans); }
+.single-reading { display: flex; min-height: 205px; align-items: center; justify-content: center; flex-direction: column; padding: 24px; text-align: center; }
+.single-reading > span { margin-bottom: 7px; color: #6c8173; font-size: 11px; font-weight: 800; letter-spacing: 1.1px; }
+.single-reading strong { color: var(--ink); font-size: 35px; line-height: 1.2; letter-spacing: -.7px; }
+.single-reading strong small { color: var(--muted); font-size: 14px; font-weight: 600; letter-spacing: 0; }
+.single-reading p { margin: 7px 0 0; color: var(--muted); font-size: 13px; }
 .chart-footer { display: flex; justify-content: space-between; gap: 12px; padding-top: 11px; border-top: 1px solid #edf1f2; color: var(--muted); font-size: 12px; font-weight: 600; }
 .chart-footer i { display: inline-block; width: 6px; height: 6px; margin-right: 5px; border-radius: 50%; background: var(--accent); }
 
@@ -578,11 +573,11 @@ input::placeholder, textarea::placeholder { color: #87969d; }
 #assistant .assistant-context > div:first-child { grid-column: 1 / -1; }
 #assistant .assistant-context > div:nth-child(3),
 #assistant .assistant-context > div:nth-child(6) { border-left: 3px solid var(--accent); }
-#assistant .assistant-context > div span { color: var(--muted); font-size: 10px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; }
+#assistant .assistant-context > div span { color: var(--muted); font-size: 11px; font-weight: 800; letter-spacing: .45px; text-transform: uppercase; }
 #assistant .assistant-context > div strong { color: var(--ink); font-size: 15px; font-weight: 800; text-align: left; }
 #assistant .assistant-context > div:nth-child(3) strong,
 #assistant .assistant-context > div:nth-child(6) strong { color: var(--ink); }
-#assistant .assistant-privacy { margin-top: 12px; padding: 11px; color: #4c626c; background: #f3f6f7; font-size: 11px; line-height: 1.55; }
+#assistant .assistant-privacy { margin-top: 12px; padding: 11px; color: #4c626c; background: #f3f6f7; font-size: 12px; line-height: 1.55; }
 
 #assistant .assistant-chat { display: flex; height: auto; min-height: 0; max-height: none; flex-direction: column; overflow: visible; }
 #assistant .assistant-chat > .card-heading { order: 1; align-items: flex-start; margin-bottom: 11px; padding-bottom: 12px; border-bottom: 1px solid #e5ebee; }
@@ -596,10 +591,10 @@ input::placeholder, textarea::placeholder { color: #87969d; }
 #assistant .ai-process > div { display: flex; min-width: 0; align-items: center; gap: 9px; }
 #assistant .ai-process b { display: grid; width: 25px; height: 25px; flex: 0 0 25px; place-items: center; border-radius: 50%; color: #fff; background: var(--brand); font-size: 11px; }
 #assistant .ai-process span { display: grid; min-width: 0; gap: 1px; }
-#assistant .ai-process strong { color: var(--ink); font-size: 12px; line-height: 1.25; }
-#assistant .ai-process small { overflow: hidden; color: var(--muted); font-size: 10px; line-height: 1.35; text-overflow: ellipsis; white-space: nowrap; }
+#assistant .ai-process strong { color: var(--ink); font-size: 13px; line-height: 1.25; }
+#assistant .ai-process small { color: var(--muted); font-size: 11px; line-height: 1.35; white-space: normal; }
 #assistant .ai-process i { color: #8ba0aa; font-size: 15px; font-style: normal; }
-#assistant .ai-mode-description { order: 3; margin: 0 0 10px; padding: 8px 10px; border-left: 3px solid var(--accent); color: #405a65; background: #f2f6ed; font-size: 11px; font-weight: 650; line-height: 1.5; }
+#assistant .ai-mode-description { order: 3; margin: 0 0 10px; padding: 8px 10px; border-left: 3px solid var(--accent); color: #405a65; background: #f2f6ed; font-size: 12px; font-weight: 650; line-height: 1.5; }
 #assistant .assistant-suggestions { order: 4; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 7px; margin: 0 0 11px; }
 #assistant .assistant-suggestions .secondary { display: flex; min-height: 42px; align-items: center; justify-content: center; padding: 8px; border: 1px solid var(--line-strong); border-radius: 7px; color: #3b5662; background: #fff; box-shadow: none; font-size: 12px; font-weight: 750; text-align: center; }
 #assistant .assistant-suggestions .optimization-suggestion,
@@ -614,7 +609,7 @@ input::placeholder, textarea::placeholder { color: #87969d; }
 #assistant .ai-message { max-width: 100%; padding: 12px 14px; border-radius: 7px; font-size: 14px; font-weight: 500; line-height: 1.6; white-space: pre-wrap; }
 #assistant .ai-message.assistant { align-self: stretch; margin: 0; border: 1px solid #dce4e7; color: #213b47; background: #fff; }
 #assistant .ai-message.user { align-self: flex-end; max-width: 82%; color: #fff; background: #285d70; }
-#assistant .ai-message-source { display: inline-flex; width: fit-content; margin-bottom: 7px; padding: 3px 7px; border-radius: 4px; color: #315b6b; background: #eaf2f4; font-size: 10px; font-weight: 800; letter-spacing: .2px; }
+#assistant .ai-message-source { display: inline-flex; width: fit-content; margin-bottom: 7px; padding: 3px 7px; border-radius: 4px; color: #315b6b; background: #eaf2f4; font-size: 11px; font-weight: 800; letter-spacing: .2px; }
 #assistant .ai-message-source.openai { color: #305c37; background: #e8f3e7; }
 #assistant .ai-message-source.fallback { color: #7a5b25; background: #f7efd9; }
 #assistant .ai-message-text { white-space: pre-wrap; }
@@ -750,8 +745,9 @@ footer .muted { font-size: 10px; }
   .page-heading > .primary { flex: 0 0 auto; margin-top: 15px; padding: 8px 10px; font-size: 11px; white-space: nowrap; }
   .notice { align-items: flex-start; font-size: 10px; }
   .notice button { font-size: 10px; white-space: nowrap; }
-  .hero { min-height: 230px; padding: 24px; }
-  .hero h2 { font-size: 30px; }
+  .hero { min-height: 0; align-items: flex-start; flex-direction: column; gap: 14px; padding: 18px; }
+  .hero h2 { font-size: 25px; }
+  .hero button { width: 100%; }
   .metrics,
   .fields,
   .zen-filters,
