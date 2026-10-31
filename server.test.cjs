@@ -19,6 +19,8 @@ async function withServer(options,run){
   await withServer({apiKey:''},async base=>{
     const status=await fetch(base+'/api/assistant/status').then(response=>response.json());
     assert.equal(status.configured,false);
+    const databaseStatus=await fetch(base+'/api/database/status').then(response=>response.json());
+    assert.equal(databaseStatus.configured,false);
     const localModel=await fetch(base+'/assistant-model.js');
     assert.equal(localModel.status,200);
     assert.match(await localModel.text(),/function interpret/);
@@ -27,6 +29,7 @@ async function withServer(options,run){
     assert.match(interfaceHtml,/Öncelikli bulgular/);
     assert.match(interfaceHtml,/OPERASYON DEĞERLENDİRMESİ/);
     assert.match(interfaceHtml,/ANALİZ ARAÇLARI/);
+    assert.match(interfaceHtml,/database\.js/);
     const industrialTheme=await fetch(base+'/industrial.css');
     assert.equal(industrialTheme.status,200);
     assert.match(await industrialTheme.text(),/Restrained industrial interface/);
@@ -35,6 +38,28 @@ async function withServer(options,run){
     assert.match(await operationsTheme.text(),/data-first industrial workspace/);
     const response=await fetch(base+'/api/assistant',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:'Yorumla'})});
     assert.equal(response.status,503);
+  });
+
+  const databaseState={demo:false,activeFacilityId:'plant-main',facilities:[{id:'plant-main',name:'Ana Tesis',line:'Hat 1',factors:{electricFactor:.45,coalFactor:2.4},goal:{targetIntensity:110,electricityPrice:3}}],records:[]};
+  const databaseCalls=[];
+  const databaseFetch=async(url,options)=>{
+    databaseCalls.push({url,body:JSON.parse(options.body),authorization:options.headers.Authorization});
+    const payload=url.endsWith('/xh_get_state')?JSON.stringify(databaseState):'';
+    return {ok:true,status:200,text:async()=>payload};
+  };
+  await withServer({supabaseUrl:'https://example-ref.supabase.co',supabaseServiceKey:'service-test',workspaceId:'test-workspace',fetchImpl:databaseFetch},async base=>{
+    const status=await fetch(base+'/api/database/status').then(response=>response.json());
+    assert.deepEqual(status,{configured:true,workspaceId:'test-workspace'});
+    const loaded=await fetch(base+'/api/database/state').then(response=>response.json());
+    assert.deepEqual(loaded.state,databaseState);
+    const saved=await fetch(base+'/api/database/state',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({state:databaseState})});
+    assert.equal(saved.status,200);
+    assert.deepEqual(await saved.json(),{saved:true});
+    assert.equal(databaseCalls[0].url,'https://example-ref.supabase.co/rest/v1/rpc/xh_get_state');
+    assert.deepEqual(databaseCalls[0].body,{p_workspace_id:'test-workspace'});
+    assert.equal(databaseCalls[0].authorization,'Bearer service-test');
+    assert.equal(databaseCalls[1].url,'https://example-ref.supabase.co/rest/v1/rpc/xh_save_state');
+    assert.deepEqual(databaseCalls[1].body,{p_workspace_id:'test-workspace',p_state:databaseState});
   });
 
   let upstreamBody,authorization;

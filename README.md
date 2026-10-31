@@ -4,7 +4,7 @@
 
 XHabitat, çimento üretiminde elektrik tüketimini ve enerji kaynaklı karbon salımını görünür hâle getiren bir web uygulamasıdır. Yeşil Gelecek Hackathonu için geliştirilen bu prototip; günlük üretim takibini, verimlilik analizini ve Cemendus senaryo modüllerini aynı çalışma alanında birleştirir.
 
-> **Prototip kapsamı:** Günlük veriler kullanıcı tarafından girilir. Fabrika demosundaki sensörler sentetiktir. Asistan API anahtarı olmadan yerel ve kural tabanlı yorum üretir; isteğe bağlı OpenAI bağlantısı gelişmiş doğal dil yanıtları sağlar. Gerçek IoT bağlantısı bulunmaz.
+> **Prototip kapsamı:** Günlük veriler kullanıcı tarafından girilir. Fabrika demosundaki sensörler sentetiktir. Asistan API anahtarı olmadan yerel ve kural tabanlı yorum üretir; isteğe bağlı OpenAI bağlantısı gelişmiş doğal dil yanıtları sağlar. Supabase yapılandırıldığında tesis ve üretim kayıtları PostgreSQL üzerinde saklanır; bağlantı yoksa uygulama tarayıcı kaydıyla çalışmaya devam eder. Gerçek IoT bağlantısı bulunmaz.
 
 ## Özellikler
 
@@ -58,6 +58,18 @@ OpenAI bağlantısı kullanıldığında tesis adı, seçili tesisin son yedi ka
 Sunumda kullanılabilecek kısa açıklama: “XHabitat önce enerji ve emisyon sonuçlarını deterministik olarak hesaplar; ardından AI bu sonuçları tesis bağlamında yorumlayıp öncelikli optimizasyon adımlarına dönüştürür.”
 
 GitHub Pages üzerinde yerel yorum modu çalışır. OpenAI modu için `/api/assistant` rotasını sunabilen bir Node.js barındırma ortamı gerekir.
+
+## Supabase veritabanı
+
+XHabitat, Supabase PostgreSQL bağlantısını Node.js sunucusu üzerinden kullanır. `service_role` anahtarı hiçbir zaman tarayıcıya gönderilmez. Veritabanı etkin olduğunda üst çubukta **Supabase ile eşitlendi** yazısı görünür; bağlantı kurulamazsa kayıtlar `localStorage` üzerinde tutulur ve daha sonra yeniden eşitlenebilir.
+
+1. Supabase Dashboard içinde yeni bir proje oluştur.
+2. **SQL Editor** ekranında [`supabase/schema.sql`](supabase/schema.sql) dosyasının tamamını çalıştır.
+3. `.env.example` dosyasını `.env` olarak kopyala.
+4. Supabase **Project Settings → API** bölümündeki proje URL’sini `SUPABASE_URL`, sunucuya özel service role anahtarını `SUPABASE_SERVICE_ROLE_KEY` alanına yaz.
+5. `npm start` ile sunucuyu yeniden başlat.
+
+İlk bağlantıda Supabase çalışma alanı boşsa mevcut tarayıcı verileri veritabanına aktarılır. Sonraki açılışlarda Supabase’deki tesisler, hedefler, emisyon katsayıları ve üretim kayıtları yüklenir. SQL şeması üç tablo kullanır: `xh_workspaces`, `xh_facilities` ve `xh_production_records`. Row Level Security etkindir ve tablolara tarayıcıdan doğrudan erişim politikası verilmez.
 
 ## Hızlı başlangıç
 
@@ -135,13 +147,15 @@ Senaryo sonuçları günlük üretim kayıtlarını veya günlük karbon hesapla
 
 ## Teknoloji ve dosya yapısı
 
-Arayüz HTML, CSS ve JavaScript ile; grafikler SVG ile hazırlanmıştır. Node.js yalnızca statik dosyaları sunar. Kayıtlar tarayıcının `localStorage` alanında tutulur.
+Arayüz HTML, CSS ve JavaScript ile; grafikler SVG ile hazırlanmıştır. Node.js statik dosyaları, AI proxy’sini ve Supabase veri API’sini sunar. Supabase yapılandırılmadığında kayıtlar tarayıcının `localStorage` alanında tutulur.
 
 ```text
 XHabitat/
 ├── index.html                 # Ana uygulama ekranları
 ├── style.css                  # Görsel tasarım ve duyarlı yerleşim
 ├── app.js                     # Kayıtlar, grafikler, hesaplamalar ve gezinme
+├── database.js                # Supabase eşitleme ve yerel yedek akışı
+├── supabase/schema.sql        # PostgreSQL tabloları ve güvenli RPC fonksiyonları
 ├── cemendus-model.js          # Senaryo, sensör ve uyarı modeli
 ├── cemendus.js                # Cemendus ekranlarının entegrasyonu
 ├── cemendus-model.test.cjs     # Hesaplama modeli testleri
@@ -170,11 +184,12 @@ Model testleri başlangıç senaryosunu, elektrik azaltımını, üretim değiş
 
 ## Veri saklama
 
-- Kayıtlar kullanılan tarayıcı ve site adresine özeldir; cihazlar arasında eşitlenmez.
+- Supabase etkinse kayıtlar PostgreSQL üzerinde saklanır ve aynı çalışma alanını kullanan cihazlarda yüklenir.
+- Supabase etkin değilse kayıtlar kullanılan tarayıcı ve site adresine özeldir; cihazlar arasında eşitlenmez.
 - Eski tek tesisli tarayıcı kayıtları ilk açılışta otomatik olarak **Ana Tesis** altında korunur.
 - Tarayıcı verilerinin silinmesi kayıtları kaldırır. Önemli kayıtlar için CSV yedeği al.
 - CSV çıktısı seçili tesisin üretim verilerini, tesis/hat adını, hesaplanan değerlerini, katsayılarını ve örnek/kullanıcı verisi ayrımını içerir.
-- Bu sürümde kullanıcı hesabı veya sunucu veritabanı yoktur. CSV içe aktarımı Veri girişi ekranındadır.
+- Bu sürümde uygulama içi kullanıcı hesabı ve kullanıcı bazlı yetkilendirme yoktur. Supabase bağlantısı sunucu anahtarıyla tek çalışma alanı olarak çalışır. CSV içe aktarımı Veri girişi ekranındadır.
 
 ## Birlikte geliştirme
 

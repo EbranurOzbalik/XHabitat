@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const root = __dirname;
-const files = {'/':'index.html','/index.html':'index.html','/style.css':'style.css','/assistant.css':'assistant.css','/industrial.css':'industrial.css','/operations.css':'operations.css','/app.js':'app.js','/cemendus.js':'cemendus.js','/cemendus-model.js':'cemendus-model.js','/zenodo.js':'zenodo.js','/csv-model.js':'csv-model.js','/csv.js':'csv.js','/assistant-model.js':'assistant-model.js','/assistant.js':'assistant.js','/data/zenodo.json':'data/zenodo.json'};
+const files = {'/':'index.html','/index.html':'index.html','/style.css':'style.css','/assistant.css':'assistant.css','/industrial.css':'industrial.css','/operations.css':'operations.css','/app.js':'app.js','/cemendus.js':'cemendus.js','/cemendus-model.js':'cemendus-model.js','/zenodo.js':'zenodo.js','/csv-model.js':'csv-model.js','/csv.js':'csv.js','/assistant-model.js':'assistant-model.js','/assistant.js':'assistant.js','/database.js':'database.js','/data/zenodo.json':'data/zenodo.json'};
 const instructions = `Sen XHabitat AI Asistanısın. Çimento tesislerinin enerji ve enerji kaynaklı karbon çıktılarını Türkçe, sade ve kısa biçimde yorumlarsın.
 Yalnızca gönderilen tesis verilerini kullan. Veri olmayan nedenleri, arızaları veya tasarruf miktarlarını uydurma. Bir değişimin olası nedenlerini söylerken bunun doğrulanması gereken bir olasılık olduğunu belirt.
 Elektrik yoğunluğunda düşük değer daha az elektrik/ton anlamına gelir. Karbon hesabının yalnızca elektrik ve kömür kaynaklı tahmin olduğunu, toplam çimento karbon ayak izi olmadığını gerektiğinde hatırlat.
@@ -67,12 +67,56 @@ function extractOutput(payload) {
   return (payload.output || []).flatMap(item => item.content || []).filter(item => item.type === 'output_text' && typeof item.text === 'string').map(item => item.text).join('\n').trim();
 }
 
+function validDatabaseState(state) {
+  return state && typeof state === 'object' && Array.isArray(state.facilities) && state.facilities.length > 0 && Array.isArray(state.records) && typeof state.activeFacilityId === 'string';
+}
+
 function createServer(options = {}) {
   const apiKey = options.apiKey ?? process.env.OPENAI_API_KEY;
   const model = options.model || process.env.OPENAI_MODEL || 'gpt-6-astra';
   const fetchImpl = options.fetchImpl || fetch;
+  const supabaseUrl = String(options.supabaseUrl ?? process.env.SUPABASE_URL ?? '').replace(/\/$/, '');
+  const supabaseServiceKey = options.supabaseServiceKey ?? process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const workspaceId = String(options.workspaceId || process.env.XHABITAT_WORKSPACE_ID || 'xhabitat-demo').slice(0, 80);
+  const databaseConfigured = /^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(supabaseUrl) && Boolean(supabaseServiceKey);
+  const callSupabase = async (procedure, body) => {
+    const upstream = await fetchImpl(`${supabaseUrl}/rest/v1/rpc/${procedure}`, {
+      method:'POST',
+      headers:{'apikey':supabaseServiceKey,'Authorization':`Bearer ${supabaseServiceKey}`,'Content-Type':'application/json'},
+      body:JSON.stringify(body),
+      signal:AbortSignal.timeout(15000)
+    });
+    const text = await upstream.text();
+    if (!upstream.ok) {
+      console.error('Supabase request failed', upstream.status, procedure);
+      throw Object.assign(new Error('supabase_error'), {status:502});
+    }
+    return text ? JSON.parse(text) : null;
+  };
   return http.createServer(async (request, response) => {
     const pathname = request.url.split('?')[0];
+    if (pathname === '/api/database/status' && request.method === 'GET') return json(response, 200, {configured:databaseConfigured,workspaceId:databaseConfigured ? workspaceId : null});
+    if (pathname === '/api/database/state' && request.method === 'GET') {
+      if (!databaseConfigured) return json(response, 503, {error:'Supabase veritabanı yapılandırılmamış.'});
+      try {
+        const state = await callSupabase('xh_get_state', {p_workspace_id:workspaceId});
+        return json(response, 200, {state});
+      } catch (error) {
+        return json(response, error.status || 500, {error:'Supabase verileri okunamadı.'});
+      }
+    }
+    if (pathname === '/api/database/state' && request.method === 'PUT') {
+      if (!databaseConfigured) return json(response, 503, {error:'Supabase veritabanı yapılandırılmamış.'});
+      try {
+        const body = await readBody(request, 1024 * 1024);
+        if (!validDatabaseState(body.state)) return json(response, 400, {error:'Geçersiz XHabitat veri durumu.'});
+        await callSupabase('xh_save_state', {p_workspace_id:workspaceId,p_state:body.state});
+        return json(response, 200, {saved:true});
+      } catch (error) {
+        const status = error.status || 500;
+        return json(response, status, {error:status === 413 ? 'Veri paketi çok büyük.' : status === 400 ? 'Geçersiz JSON.' : 'Supabase verileri kaydedilemedi.'});
+      }
+    }
     if (pathname === '/api/assistant/status' && request.method === 'GET') return json(response, 200, {configured:Boolean(apiKey),model:apiKey ? model : null});
     if (pathname === '/api/assistant' && request.method === 'POST') {
       if (!apiKey) return json(response, 503, {error:'AI asistanı yapılandırılmamış. Sunucuda OPENAI_API_KEY tanımla.'});
